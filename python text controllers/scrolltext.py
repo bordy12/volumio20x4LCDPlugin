@@ -18,10 +18,10 @@ try:
 	textThree = argv[3]
 	textFour = argv[4]
 	
-	restartLineOne = time()
-	restartLineTwo = time()
-	restartLineThree = time()
-	restartLineFour = time()
+	restartLineOne = time()-1
+	restartLineTwo = time()-1
+	restartLineThree = time()-1
+	restartLineFour = time()-1
 
 	posLineOne=0
 	posLineTwo=0
@@ -29,8 +29,8 @@ try:
 	posLineFour=0
 
 	timeWaitTimeStamp = time()
-	timeWait = 0.25
-	lineTimeWait = 0.75
+	timeWait = 0.5
+	lineTimeWait = 0  # Set to 0, unless the moving text should wait extra long before scrolling
 
 	textLineOne =   textOne + " | " + textOne[0:20]
 	textLineTwo =   textTwo + " | " + textTwo[0:20]
@@ -59,7 +59,6 @@ try:
 
 	while(True):
 		if(time()-timeWaitTimeStamp >= timeWait):
-		
 			# Line one code starts here
 			if(len(textOne) > 20):
 				if(time()-restartLineOne > lineTimeWait):
@@ -150,4 +149,5 @@ try:
 except IndexError:
 	print("Not enough arguments were given (I need 4 arguments)\nExiting...")
 	exit(0)
-
+except KeyboardInterrupt:
+	print("\nExiting...")
