@@ -1,19 +1,18 @@
-#TODO: INSTEAD OF PRINTING DIRECTLY TO SCREEN, SET VARS AND THEN, AT THE, END SOMEWHERE, PRINT THEM! (LCD AND IT'S LIBRARY WILL LIKE THIS BETTER)
-
 from os import *
 from time import *
 from sys import *
 
+def sendToLCD(lineNum, textToDisplay): #This function will send a string to the LCD screen
+	#TODO: Unicode support/disregard. If unicode chars are found, what to do? Dont send the string? Try to send them anyway? Send '????????????'?
+	#emulating LCD using terminal-window at the moment
+	print(str(lineNum) + ': ' + str(textToDisplay))
 try:
-
-	#void setup(){
-
 	# Allow people to ask for help using -h, help or --help
 	if(argv[1] == "--help" or argv[1] == "help" or argv[1] == "-h"):
-		print("Usage: python scrolltext.py <text you want to scroll on line one> <line two text> <line three text> <line four text>\nDon't forget to put quotes where needed!")
-		exit(0)  # Don't go ahead and scroll --help or something XD
+		print("Usage: python scrolltext.py '<line one text>' '<line two text>' '<line three text>' '<line four text>'\nDon't forget the quotes")
+		exit(0)  # Quit after showing the help-text
 
-	#plz change deez in future so they get actual music info from mdp(?)-client or local webpage
+	#TODO: change these in future so they get actual music info from mdp(?)-client or local webpage
 	textOne = argv[1]
 	textTwo = argv[2]
 	textThree = argv[3]
@@ -31,16 +30,26 @@ try:
 
 	timeWaitTimeStamp = time()
 	timeWait = 0.25
-	lineTimeWait = 1
+	lineTimeWait = 0.75
 
 	textLineOne =   textOne + " | " + textOne[0:20]
 	textLineTwo =   textTwo + " | " + textTwo[0:20]
 	textLineThree = textThree + " | " + textThree[0:20]
 	textLineFour =  textFour + " | " + textFour[0:20]
+	
+	writeLineOne = False
+	writeLineTwo = False
+	writeLineThree = False
+	writeLineFour = False
 
+	lineOneChanged = True
+	lineTwoChanged = True
+	lineThreeChanged = True
+	lineFourChanged = True
+		
 	lastPrintedTextLineOne = 0
 	lastPrintedTextLineTwo = 0
-	lastPrintedTextLinethree = 0
+	lastPrintedTextLineThree = 0
 	lastPrintedTextLineFour = 0
 
 	toPrintTextLineOne = 0
@@ -48,53 +57,97 @@ try:
 	toPrintTextLineThree = 0
 	toPrintTextLineFour = 0
 
-	#}
-
-	#void loop(){
-
 	while(True):
 		if(time()-timeWaitTimeStamp >= timeWait):
+		
 			# Line one code starts here
 			if(len(textOne) > 20):
 				if(time()-restartLineOne > lineTimeWait):
-					system("clear")
+					writeLineOne = True
 					toPrintTextLineOne = textLineOne[posLineOne:posLineOne+20]
 					lastPrintedTextLineOne = textLineOne[posLineOne:posLineOne+20]
 					posLineOne = posLineOne +1
-					if(posLineOne >= len(textLineOne)-19):
-						posLineOne = 0
+					lineOneChanged = True
+					if(posLineOne >= len(textLineOne)-18):
+						posLineOne = 1
 						restartLineOne = time()
+						lineOneChanged = False
 					timeStampLineOne = time()
 			else:
-				if(textOne != lastPrintedTextLineOne):  #We willen niet oneindig keer hetzelfde sturen naar de LCD, want dat is teveel moeite
-					system("clear")
-					toPrintTextLineOne = textOne
-					lastPrintedTextLineOne = textOne
+				toPrintTextLineOne = textOne
+				writeLineOne = True
+			
 			# Line two code starts here
 			if(len(textTwo) > 20):
 				if(time()-restartLineTwo > lineTimeWait):
-					system("clear")
+					writeLineTwo = True
 					toPrintTextLineTwo = textLineTwo[posLineTwo:posLineTwo+20]
 					lastPrintedTextLineTwo = textLineTwo[posLineTwo:posLineTwo+20]
 					posLineTwo = posLineTwo +1
-					if(posLineTwo >= len(textLineTwo)-19):
-						posLineTwo = 0
+					lineTwoChanged = True
+					if(posLineTwo >= len(textLineTwo)-18):
+						posLineTwo = 1
 						restartLineTwo = time()
+						lineTwoChanged = False
 					timeStampLineTwo = time()
 			else:
-				if(textTwo != lastPrintedTextLineTwo):  #We willen niet oneindig keer hetzelfde sturen naar de LCD, want dat is teveel moeite
-					system("clear")
-					toPrintTextLineTwo = textTwo
-					lastPrintedTextLineTwo = textTwo
-			# HIER NOG 3 ANDERE CHECKS VOOR DE OVERIGE REGELS!
+				toPrintTextLineTwo = textTwo
+				writeLineTwo = True
+				
+			# Line three code starts here
+			if(len(textThree) > 20):
+				if(time()-restartLineThree > lineTimeWait):
+					writeLineThree = True
+					toPrintTextLineThree = textLineThree[posLineThree:posLineThree+20]
+					lastPrintedTextLineThree = textLineThree[posLineThree:posLineThree+20]
+					posLineThree = posLineThree +1
+					lineThreeChanged = True
+					if(posLineThree >= len(textLineThree)-18):
+						posLineThree = 1
+						restartLineThree = time()
+						lineThreeChanged = False
+					timeStampLineThree = time()
+			else:
+				toPrintTextLineThree = textThree
+				writeLineThree = True
+				
+			# Line four code starts here
+			if(len(textFour) > 20):
+				if(time()-restartLineFour > lineTimeWait):
+					writeLineFour = True
+					toPrintTextLineFour = textLineFour[posLineFour:posLineFour+20]
+					lastPrintedTextLineFour = textLineFour[posLineFour:posLineFour+20]
+					posLineFour = posLineFour +1
+					lineFourChanged = True
+					if(posLineFour >= len(textLineFour)-18):
+						posLineFour = 1
+						restartLineFour = time()
+						lineFourChanged = False
+					timeStampLineFour = time()
+			else:
+				toPrintTextLineFour = textFour
+				writeLineFour = True
+			
+			if(lineOneChanged == True and writeLineOne == True):
+				sendToLCD(0, toPrintTextLineOne)
+				writeLineOne = False
+				lineOneChanged = False
+			if(lineTwoChanged == True and writeLineTwo == True):
+				sendToLCD(1, toPrintTextLineTwo)
+				writeLineTwo = False
+				lineTwoChanged = False
+			if(lineThreeChanged == True and writeLineThree == True):
+				sendToLCD(2, toPrintTextLineThree)
+				writeLineThree = False
+				lineThreeChanged = False
+			if(lineFourChanged == True and writeLineFour == True):
+				sendToLCD(3, toPrintTextLineFour)
+				writeLineFour = False
+				lineFourChanged = False
 
-			#DIT IS LELIJK DOE DIT JE SCRIPT NIET AAN STRAKS!
-			if(str(toPrintTextLineOne) != str(0) or str(toPrintTextLineTwo) != str(0)):
-				print(str(toPrintTextLineOne) + "\n" + str(toPrintTextLineTwo))
-
-			timeWaitTimeStamp = time()  #MOET HELEMAAL ONDERAAN STRAKS!
-	#}
+			timeWaitTimeStamp = time()
 
 except IndexError:
-	print("No arguments were given (I need 4 arguments)\nExiting...")
+	print("Not enough arguments were given (I need 4 arguments)\nExiting...")
 	exit(0)
+
