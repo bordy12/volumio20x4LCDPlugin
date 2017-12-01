@@ -18,10 +18,10 @@ try:
 	textThree = argv[3]
 	textFour = argv[4]
 	
-	restartLineOne = time()-1
-	restartLineTwo = time()-1
-	restartLineThree = time()-1
-	restartLineFour = time()-1
+	restartLineOne = time()
+	restartLineTwo = time()
+	restartLineThree = time()
+	restartLineFour = time()
 
 	posLineOne=0
 	posLineTwo=0
