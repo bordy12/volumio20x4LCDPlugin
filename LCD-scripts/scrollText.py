@@ -23,7 +23,7 @@ my_lcd = lcd()
 lcd_position=[1,3,2,4]
 
 #define some options
-moveText = 1 #For stability, This should be remain 1. This script can handle >= 2 though, but it will look a bit weird as it is right now.
+moveText = 1 #For stability, This should be remain 1. This script can handle >= 2 though, but it will look a bit weird as it is right now. DO NOT FEED THIS A FLOAT NUMBER!
 infoRefreshTimeWait = 0.2
 timeWaitTimeStamp = 0
 infoRefreshTimeStamp = time()
@@ -43,6 +43,15 @@ def sendToLCD(lineNum, textToDisplay): #This function will send a string to the 
         my_lcd.display_string(textToDisplay, lcd_position[lineNum])
         #print(str(lineNum) + ': ' + str(textToDisplay)) #DEBUG!
 
+welcomeTimestamp = time()
+welcomeTime = 3
+# Show welcome message
+sendToLCD(0, 'NULL')
+sendToLCD(1, 'Welcome back!')
+sendToLCD(2, 'NULL')
+sendToLCD(3, 'NULL')
+sleep(welcomeTime)
+
 def updateLCDinfo():
 	returnData = [' ', ' ', ' ', ' ']
 	currentSong = client.currentsong()
@@ -57,15 +66,15 @@ def updateLCDinfo():
 						title = currentSong['title']
 					else:
 						title = "No title"
-					if '-' in title or ':' in title:
-						titleSplit = title.replace(':', '-').split('-')
+					if ' - ' in title or ' : ' in title:
+						titleSplit = title.replace(' : ', ' - ').split(' - ')
 						title = titleSplit[0]
 						artist = titleSplit[1]
 						if(artist[0:1] == ' '):  # split() does it's job correctly, but I don't want a <space> at the beginning of informations
 							artist = artist[1::]  # So info=info-first_char
 						if(title[-1] == ' '):
 							title = title[:-1]
-						returnData = [title, artist, source, ' ']
+						returnData = [title, artist, ' ', ' ']
 					else:
 						returnData = [title, source, ' ', ' ']
 				else:
@@ -80,8 +89,8 @@ def updateLCDinfo():
 							title = title[4::] # Remove all the '/USB' from the filename's path
 						while('INTERNAL/' in title):
 							title = title[9::] # Remove all the '/INTERNAL' from the filename's path
-						if '-' in title or ':' in title:
-							titleSplit = title.replace(':', '-').split('-')
+						if ' - ' in title or ' : ' in title:
+							titleSplit = title.replace(' : ', ' - ').split(' - ')
 							title = titleSplit[0]
 							artist = titleSplit[1]
 							#Remove all spaces before and after the title artist text
