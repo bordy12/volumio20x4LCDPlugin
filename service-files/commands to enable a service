@@ -1,0 +1,4 @@
+sudo mv volumioLCDservice /etc/init.d/
+sudo chmod +x volumioLCDservice
+sudo update-rc.d volumioLCDservice defaults
+# Yay! It will not start on boot!

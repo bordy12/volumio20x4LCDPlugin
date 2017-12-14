@@ -1,0 +1,24 @@
+#! /bin/sh
+# /etc/init.d/volumioLCDservice
+#
+
+# Some things that run always
+touch /var/lock/volumioLCDservice
+
+# Carry out specific functions when asked to by the system
+case "$1" in
+  start)
+    sudo python /home/volumio/testmapjen/scrollText.py &
+    ;;
+  stop)
+    echo "Stopping LCD-controller "
+    # TODO: Make LCD blank before exiting!
+    echo "I cannot make the screen blank yet "
+    ;;
+  *)
+    echo "Usage: /etc/init.d/volumioLCDservice {start|stop}"
+    exit 1
+    ;;
+esac
+
+exit 0
