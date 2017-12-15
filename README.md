@@ -16,7 +16,7 @@ Using the image above as a reference:
   - SDA => SDA1  (pin 03)
 
 ## How to install the plugin
-- Go to http://<yourvolumioname>.local (or http://<your_volumio_ip>/ if the first option does not work)
+- Go to http://yourvolumioname.local (or http://your_volumio_ip/ if the first option does not work)
 - Click the gears-icon in the top-right
 - Click "PLUGINS"
 - Click "Upload Plugin"
