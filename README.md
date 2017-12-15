@@ -15,6 +15,7 @@ The plugin can display information about music files and webradio's when they ar
   - Displaying a pause icon next to the elapsed time for music files if the music is paused at any time
   - Separating '01 - title - artist' into<br>01<br>title<br>artist<br>for webradios and music files
   - Displaying a welcome-message at startup (see "Change plugin settings" on how to customize this)
+
 The plugin can auto-update information when it changes, for exmaple, switching from webradio to a music file, pausing music files, etc.
 
 ## How to install the plugin
