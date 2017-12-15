@@ -11,10 +11,10 @@ http://domoticx.com/wp-content/uploads/YM2004A-LCD-Display-2x20-4x20.jpg
 ## How to connect the LCD
 
 Using https://i.pinimg.com/originals/84/46/ec/8446eca5728ebbfa85882e8e16af8507.png as a reference:
-  VCC => 5V    (pin 02 or pin 04)
-  GND => GND   (There are multiple GND pins, but pin 06 is the closest)
-  SCL => SCL1  (pin 05)
-  SDA => SDA1  (pin 03)
+  - VCC => 5V    (pin 02 or pin 04)
+  - GND => GND   (There are multiple GND pins, but pin 06 is the closest)
+  - SCL => SCL1  (pin 05)
+  - SDA => SDA1  (pin 03)
 
 ## How to install the plugin
 - Go to http://<yourvolumioname>.local (or http://<your_volumio_ip>/ if the first option does not work)
