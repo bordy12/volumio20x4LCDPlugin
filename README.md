@@ -5,14 +5,17 @@ It can retreive information about songs and webradio's and print them on an LCD-
 <img width="380px" src='https://www.raspberrypi-spy.co.uk/wp-content/uploads/2015/04/i2c_backpack_02-1024x597.jpg' alt='LCD_back'><br>
 <img width="380px" src='http://domoticx.com/wp-content/uploads/YM2004A-LCD-Display-2x20-4x20.jpg' alt="LCD_front">
 
-## How to connect the LCD
+## Plugin features
 
-<img width="400px" src='https://i.pinimg.com/originals/84/46/ec/8446eca5728ebbfa85882e8e16af8507.png' alt='pi3_pinout'><br>
-Using the image above as a reference:
-  - VCC => 5V    (pin 02 or pin 04)
-  - GND => GND   (There are multiple GND pins, but pin 06 is the closest)
-  - SCL => SCL1  (pin 05)
-  - SDA => SDA1  (pin 03)
+The plugin can display information about music files and webradio's when they are playing, such as:
+  - Displaying the name of the radio station the webradio is playing
+  - Displaying the name of the song that the webradio is playing
+  - Displaying music files, either the embedded tags or the filename
+  - Displaying elapsed time for music files
+  - Displaying a pause icon next to the elapsed time for music files if the music is paused at any time
+  - Separating '01 - title - artist' into<br>01<br>title<br>artist<br>for webradios and music files
+  - Displaying a welcome-message at startup (see "Change plugin settings" on how to customize this)
+The plugin can auto-update information when it changes, for exmaple, switching from webradio to a music file, pausing music files, etc.
 
 ## How to install the plugin
 - Go to http://your_volumio_name.local (or http://your_volumio_ip/ if the first option does not work)
@@ -30,8 +33,17 @@ After uninstalling, the LCD might still show some text and it will look like it 
 
 ## Change plugin settings
 
-The plugin settings cannot be changed via the plugin-settings yet.<br>However, after installing the plugin, you can SSH into Volumio and change '/opt/LCDcontroller/settings.py' to tweak some settings.<br>I will add plugin settings later.
+The plugin settings cannot be changed via the plugin-settings yet.<br>However, after installing the plugin, you can SSH into Volumio and change '/opt/LCDcontroller/settings.py' to tweak some settings, for example the welcome-message.<br>I will add plugin settings later.
 
 ## Turning the plugin on and off
 
 This plugin cannot be turned on or off via the plugin-settings yet. The plugin stays enabled until it is uninstalled.<br>I will add this feature in the future.
+
+## How to connect the LCD
+
+<img width="400px" src='https://i.pinimg.com/originals/84/46/ec/8446eca5728ebbfa85882e8e16af8507.png' alt='pi3_pinout'><br>
+Using the image above as a reference:
+  - VCC => 5V    (pin 02 or pin 04)
+  - GND => GND   (There are multiple GND pins, but pin 06 is the closest)
+  - SCL => SCL1  (pin 05)
+  - SDA => SDA1  (pin 03)
