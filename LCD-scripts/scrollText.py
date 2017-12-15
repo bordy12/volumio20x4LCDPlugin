@@ -1,12 +1,14 @@
 #! /usr/bin/env python
+# Import settings.py
+import settings
+# import the rest
 from os import *
 from time import *
 from sys import *
 from math import *
-
 from mpd import MPDClient
 
-mpd_host = "127.0.0.1"
+mpd_host = settings.getHostIP()
 mpd_port = "6600"
 mpd_password = "volumio"
 
@@ -44,12 +46,13 @@ def sendToLCD(lineNum, textToDisplay): #This function will send a string to the 
         #print(str(lineNum) + ': ' + str(textToDisplay)) #DEBUG!
 
 welcomeTimestamp = time()
-welcomeTime = 3
+welcomeTime = settings.getWelcomeMessageDuration()
+welcomeMessage = settings.getWelcomeMessage()
 # Show welcome message
-sendToLCD(0, 'NULL')
-sendToLCD(1, 'Welcome back!')
-sendToLCD(2, 'NULL')
-sendToLCD(3, 'NULL')
+sendToLCD(0, welcomeMessage['Line1'])
+sendToLCD(1, welcomeMessage['Line2'])
+sendToLCD(2, welcomeMessage['Line3'])
+sendToLCD(3, welcomeMessage['Line4'])
 sleep(welcomeTime)
 
 def updateLCDinfo():
@@ -62,29 +65,48 @@ def updateLCDinfo():
 				source = currentSong['file']
 				if 'http' in currentSong['file']: #Check for any webstreams before returning information
 					#It's a radio-stream from the interwebs! Peform some magic on the title, because it also contains the artist's name
+					radioName = ' '
+					extraInfo = ' '
+					extraInfoFound = False
+					if('name' in str(currentSong)):
+						radioName = currentSong['name']
 					if('title' in str(currentSong)):
 						title = currentSong['title']
 					else:
-						title = "No title"
+						title = ' '
 					if ' - ' in title or ' : ' in title:
 						titleSplit = title.replace(' : ', ' - ').split(' - ')
 						title = titleSplit[0]
 						artist = titleSplit[1]
+						if(len(titleSplit) >= 3):
+							extraInfo = titleSplit[2]
+							extraInfoFound = True
 						if(artist[0:1] == ' '):  # split() does it's job correctly, but I don't want a <space> at the beginning of informations
 							artist = artist[1::]  # So info=info-first_char
 						if(title[-1] == ' '):
 							title = title[:-1]
-						returnData = [title, artist, ' ', ' ']
+						if(extraInfoFound == False):
+							returnData = [title, artist, radioName, ' ']
+						else:
+							returnData = [title, artist, extraInfo, radioName]
 					else:
-						returnData = [title, source, ' ', ' ']
+						returnData = [title, radioName, ' ', ' ']
 				else:
 					#It's not playing a web-stream, but a music file
 					# Always show tags first, then filenames
 					artistFoundBySplittingFilename = False
+					extraInfo = ' '
+					extraInfoFound = False
+					albumFound = False
 					if 'title' in str(currentSong):
 						title = currentSong['title']
 					else:
 						title = currentSong['file']
+						#Do not include .mp3, .wma, .flac etc in the song's name
+						if(str(title[-4]) == '.'):
+							title = title[0:-4]
+						elif(str(title[-5]) == '.'):
+							title = title[0:-5]
 						while('USB/' in title):
 							title = title[4::] # Remove all the '/USB' from the filename's path
 						while('INTERNAL/' in title):
@@ -96,17 +118,12 @@ def updateLCDinfo():
 							#Remove all spaces before and after the title artist text
 							if(title[0] == ' '):
 								title = title[1::]
-							if(title[-1] == ' '):
+							elif(title[-1] == ' '):
 								title = title[:-1]
 							if(artist[0] == ' '):
 								artist = artist[1::]
-							if(artist[-1] == ' '):
+							elif(artist[-1] == ' '):
 								artist = artist[:-1]
-							#Do not include .mp3, .wma, .flac etc in the artist-name
-							if(str(artist[-4]) == '.'):
-								artist = artist[0:-4]
-							if(str(artist[-5]) == '.'):
-								artist = artist[0:-5]
 							#We already found the artist, stop looking for tags please
 							if(artist != '' or artist != ' '):
 								artistFoundBySplittingFilename = True
@@ -114,6 +131,10 @@ def updateLCDinfo():
 								artist = artist[1::]  # So info=info-first_char
 							if(title[-1] == ' '):
 								title = title[:-1]
+							#Look for more info that might be useful to people. (some filenames can be '01 - title - artist.mp3'. They should be handled properly)
+							if(len(titleSplit) >= 3):
+								extraInfo = titleSplit[2]
+								extraInfoFound = True
 					# Check if the file contains an artist-name
 					if 'albumartist' in str(currentSong) and artistFoundBySplittingFilename == False:
 						artist = currentSong['albumartist']
@@ -122,14 +143,18 @@ def updateLCDinfo():
 					# Check if the file contains an album-name
 					if 'album' in str(currentSong):
 						album = currentSong['album']
+						albumFound = True
 					else:
 						album = ' '
 					m, s = divmod(float(status['elapsed']), 60)
 					h, m = divmod(m, 60)
 					elapsedTime = "%d:%02d:%02d" % (h, m, s)
 					if(status['state'] == 'pause'):
-						elapsedTime = str(elapsedTime) + " ||"
-					returnData = [title, artist, album, str(elapsedTime)]
+						elapsedTime = "   " + str(elapsedTime) + " ||"
+					if(albumFound == True and extraInfoFound == False):
+						returnData = [title, artist, album, str(elapsedTime)]
+					else:
+						returnData = [title, artist, extraInfo, str(elapsedTime)]
 			else:
 				returnData = [' ', ' ', ' ', ' ']
 		else:
@@ -178,7 +203,7 @@ try:
 	toPrintTextLineFour = 0
 
 	while(True):
-		if(time()-infoRefreshTimeStamp >= 0.2):
+		if(time()-infoRefreshTimeStamp >= settings.getInfoRefreshInterval()):
 			# It's time to update the information about the songs and such
 			songInfo = updateLCDinfo()
 			textOne = songInfo[0]
