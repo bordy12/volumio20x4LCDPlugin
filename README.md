@@ -1,6 +1,4 @@
-# Hello
-
-## Welcome
+# Welcome
 
 Welcome to the project page for a plugin I created for Volumio2 for the Raspberry Pi.
 It can retreive information about songs and webradio's and print them on an LCD-screen with I2C (4x20).
