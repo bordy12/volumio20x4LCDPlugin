@@ -21,7 +21,7 @@ Using https://i.pinimg.com/originals/84/46/ec/8446eca5728ebbfa85882e8e16af8507.p
 - Click the gears-icon in the top-right
 - Click "PLUGINS"
 - Click "Upload Plugin"
-- Upload LCDcontroller-volumio-plugin/plugin.zip
+- Upload plugin.zip
 - After the plugin has been successfully installed, reboot volumio
   Optional: You can SSH into volumio and run 'sudo /etc/init.d/volumioLCDservice' instead of rebooting
 
