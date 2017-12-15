@@ -4,6 +4,7 @@ Welcome to the project page for a plugin I created for Volumio2 for the Raspberr
 It can retreive information about songs and webradio's and print them on an LCD-screen with I2C (4x20).
 Pictures of the 4x20 LCD I found online
 https://www.raspberrypi-spy.co.uk/wp-content/uploads/2015/04/i2c_backpack_02-1024x597.jpg
+
 http://domoticx.com/wp-content/uploads/YM2004A-LCD-Display-2x20-4x20.jpg
 
 ## How to connect the LCD
