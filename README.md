@@ -20,7 +20,7 @@ Using the image above as a reference:
 - Click "PLUGINS"
 - Click "Upload Plugin"
 - Upload plugin.zip
-- After the plugin has been successfully installed, reboot volumio<br>Optional: You can SSH into volumio and run 'sudo /etc/init.d/volumioLCDservice' instead of rebooting
+- After the plugin has been successfully installed, reboot volumio<br>Optional: You can SSH into volumio and run 'sudo /etc/init.d/volumioLCDservice start' instead of rebooting
 
 ## How to uninstall the plugin
 The plugin can be uninstalled as any other Volumio plugin:
@@ -30,8 +30,8 @@ After uninstalling, the LCD might still show some text and it will look like it 
 
 ## Change plugin settings
 
-The plugin settings cannot be changed via the plugin-settings yet.<br>However, after installing the plugin, you can change '/opt/LCDcontroller/settings.py' to tweak some settings.<br>This is something that I will fix in the future
+The plugin settings cannot be changed via the plugin-settings yet.<br>However, after installing the plugin, you can SSH into Volumio and change '/opt/LCDcontroller/settings.py' to tweak some settings.<br>I will add plugin settings later.
 
 ## Turning the plugin on and off
 
-This plugin cannot be turned on or off via the plugin-settings yet. The plugin stays enabled until it is uninstalled.<br>I will fix this in the future
+This plugin cannot be turned on or off via the plugin-settings yet. The plugin stays enabled until it is uninstalled.<br>I will add this feature in the future.
