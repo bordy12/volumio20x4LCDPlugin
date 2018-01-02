@@ -89,6 +89,21 @@ def updateLCDinfo():
 							returnData = [title, artist, radioName, ' ']
 						else:
 							returnData = [title, artist, extraInfo, radioName]
+					elif '-' in title or ':' in title:
+						titleSplit = title.replace(':', '-').split('-')
+						title = titleSplit[0]
+						artist = titleSplit[1]
+						if(len(titleSplit) >= 3):
+							extraInfo = titleSplit[2]
+							extraInfoFound = True
+						if(artist[0:1] == ' '):  # split() does it's job correctly, but I don't want a <space> at the beginning of informations
+							artist = artist[1::]  # So info=info-first_char
+						if(title[-1] == ' '):
+							title = title[:-1]
+						if(extraInfoFound == False):
+							returnData = [title, artist, radioName, ' ']
+						else:
+							returnData = [title, artist, extraInfo, radioName]
 					else:
 						returnData = [title, radioName, ' ', ' ']
 				else:
