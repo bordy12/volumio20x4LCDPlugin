@@ -39,12 +39,3 @@ The plugin settings cannot be changed via the plugin-settings yet.<br>However, a
 ## Turning the plugin on and off
 
 This plugin cannot be turned on or off via the plugin-settings yet. The plugin stays enabled until it is uninstalled.<br>I will add this feature in the future.
-
-## How to connect the LCD
-
-<img width="400px" src='https://i.pinimg.com/originals/84/46/ec/8446eca5728ebbfa85882e8e16af8507.png' alt='pi3_pinout'><br>
-Using the image above as a reference:
-  - VCC => 5V    (pin 02 or pin 04)
-  - GND => GND   (There are multiple GND pins, but pin 06 is the closest)
-  - SCL => SCL1  (pin 05)
-  - SDA => SDA1  (pin 03)
