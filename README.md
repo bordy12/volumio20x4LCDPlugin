@@ -24,7 +24,7 @@ The plugin can auto-update information when it changes, for exmaple, switching f
 - Click "PLUGINS"
 - Click "Upload Plugin"
 - Upload plugin.zip
-- After the plugin has been successfully installed, reboot volumio<br>Optional: You can SSH into volumio and run 'sudo /etc/init.d/volumioLCDservice start' instead of rebooting
+- After the plugin has been successfully installed, reboot volumio<br>Optional (will be automated in the future): You can SSH into volumio and run 'sudo /etc/init.d/volumioLCDservice start' instead of rebooting
 
 ## How to uninstall the plugin
 The plugin can be uninstalled as any other Volumio plugin:
