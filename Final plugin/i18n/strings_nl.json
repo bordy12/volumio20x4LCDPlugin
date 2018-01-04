@@ -1,0 +1,29 @@
+{
+  "PLUGIN_CONFIGURATION":"LCD instellingen",
+  "TITLE":"Instellingen voor het LCD-display",
+  "SAVE":"Opslaan",
+  "TEXTSPLITLABEL":"Scheidingsteken scrollende tekst",
+  "TEXTSPLITDOC":"Als een muzieknaam, artiestnaam etc. te lang is om op het LCD-scherm weer te geven, dan gaat de tekst automatisch scrollen. Als de scrollende tekst aan het eind komt, wordt er een scheidingsteken weergegeven en begint het scrollen opnieuw. Als deze instelling gewijzigd wordt, dan wordt er een ander scheidingsteken weergegeven tussen de scrollende tekst. Het scheidingsteken kan meerdere karakters lang zijn of worden weggelaten.",
+
+  "WELCOMEMESSAGEBOOLLABEL":"Welkomstbericht bij opstarten LCD-scherm",
+  "WELCOMEMESSAGEBOOLDOC":"Er kan een welkomstbericht worden ingesteld met de tekstvakken hieronder. Deze instelling zet het welkomstbericht aan of uit.",
+
+  "WELCOMEMESSAGEDURATIONLABEL":"Duur welkomstbericht in seconden",
+  "WELCOMEMESSAGEDURATIONDOC":"Hoeveel seconden moet het welkomstbericht blijven staan op het LCD-scherm?",
+
+  "WELCOMEMESSAGELABEL1":"Welkomsttekst regel 1",
+  "WELCOMEMESSAGEDOC1":"Wanneer de plugin start wordt er, indien ingesteld een welkomstbericht weergegeven op het LCD-scherm. Deze instelling kan worden gewijzigd om op regel 1 tekst weer te geven van maximaal 20 karakters.",
+
+  "WELCOMEMESSAGELABEL2":"Welkomsttekst regel 2",
+  "WELCOMEMESSAGEDOC2":"Wanneer de plugin start wordt er, indien ingesteld een welkomstbericht weergegeven op het LCD-scherm. Deze instelling kan worden gewijzigd om op regel 2 tekst weer te geven van maximaal 20 karakters.",
+
+  "WELCOMEMESSAGELABEL3":"Welkomsttekst regel 3",
+  "WELCOMEMESSAGEDOC3":"Wanneer de plugin start wordt er, indien ingesteld een welkomstbericht weergegeven op het LCD-scherm. Deze instelling kan worden gewijzigd om op regel 3 tekst weer te geven van maximaal 20 karakters.",
+
+  "WELCOMEMESSAGELABEL4":"Welkomsttekst regel 4",
+  "WELCOMEMESSAGEDOC4":"Wanneer de plugin start wordt er, indien ingesteld een welkomstbericht weergegeven op het LCD-scherm. Deze instelling kan worden gewijzigd om op regel 4 tekst weer te geven van maximaal 20 karakters.",
+
+  "HOSTLABEL":"MPD-host",
+  "HOSTDOC":"Deze plugin gebruikt MPD (pakket python-mpd) om informatie op te vragen van Volumio. Volumio heeft een mooie manier om gemakkelijk informatie over afspelende nummers te delen met andere Volumio-apparaten. Indien Volumio's manier niet werkt, kan bij deze instelling het IP-adres van een ander Volumio-apparaat worden ingevuld, om daar rechtstreeks informatie van op te vragen. Het is aan te raden om het externe Volumio-apparaat alvorens een statisch IP-adres te geven."
+
+}

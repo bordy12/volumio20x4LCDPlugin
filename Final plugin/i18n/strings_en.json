@@ -1,0 +1,7 @@
+{
+  "PLUGIN_CONFIGURATION":"LCD settings",
+  "TITLE":"Settings for the LCD-display",
+  "SAVE":"Save",
+  "TEXTSPLITLABEL":"Separator for scrolling text",
+  "TEXTSPLITDOC":"If a song name, artist name etc. is too long to display on the LCD-screen, the text will automatically start scrolling. If the scrolling text reaches the end, a separator will be shown and the text will start to scroll from the beginning again. You can change this setting to apply your own separator. The separator can be as many characters as you want and can also be left empty."
+}

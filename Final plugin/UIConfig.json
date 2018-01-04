@@ -1,0 +1,87 @@
+{
+  "page": {
+    "label": "TRANSLATE.PLUGIN_CONFIGURATION"
+  },
+  "sections": [
+   {
+      "id": "lcdcontroller_settings",
+      "element": "section",
+      "label": "TRANSLATE.TITLE",
+      "icon": "fa-plug",
+      "onSave": {"type":"controller", "endpoint":"user_interface/lcdcontroller", "method":"saveConf"},
+      "saveButton": {
+        "label": "Save",
+        "data": [
+          "textone",
+          "texttwo",
+          "boolset"
+        ]
+      },
+      "content": [
+        {
+          "id": "text_split_string",
+          "type":"text",
+          "element": "input",
+          "doc": "TRANSLATE.TEXTSPLITDOC",
+          "label": "TRANSLATE.TEXTSPLITLABEL",
+          "value": "|"
+        },
+	{
+          "id":"welcome_message_bool",
+          "element": "switch",
+          "doc": "TRANSLATE.WELCOMEMESSAGEBOOLDOC",
+          "label": "TRANSLATE.WELCOMEMESSAGEBOOLLABEL",
+          "value": false
+        },
+	{
+          "id": "welcome_message_duration",
+          "type":"text",
+          "element": "input",
+          "doc": "TRANSLATE.WELCOMEMESSAGEDURATIONDOC",
+          "label": "TRANSLATE.WELCOMEMESSAGEDURATIONLABEL",
+          "value": "2"
+        },
+        {
+          "id": "welcome_message_string_one",
+          "type":"text",
+          "element": "input",
+          "doc": "TRANSLATE.WELCOMEMESSAGEDOC1",
+          "label": "TRANSLATE.WELCOMEMESSAGELABEL1",
+          "value": " "
+        },
+	{
+          "id": "welcome_message_string_two",
+          "type":"text",
+          "element": "input",
+          "doc": "TRANSLATE.WELCOMEMESSAGEDOC2",
+          "label": "TRANSLATE.WELCOMEMESSAGELABEL2",
+          "value": " "
+        },
+	{
+          "id": "welcome_message_string_three",
+          "type":"text",
+          "element": "input",
+          "doc": "TRANSLATE.WELCOMEMESSAGEDOC3",
+          "label": "TRANSLATE.WELCOMEMESSAGELABEL3",
+          "value": " "
+        },
+	{
+          "id": "welcome_message_string_four",
+          "type":"text",
+          "element": "input",
+          "doc": "TRANSLATE.WELCOMEMESSAGEDOC4",
+          "label": "TRANSLATE.WELCOMEMESSAGELABEL4",
+          "value": " "
+        },
+	{
+          "id": "host",
+          "type":"text",
+          "element": "input",
+          "doc": "TRANSLATE.HOSTDOC",
+          "label": "TRANSLATE.HOSTLABEL",
+          "value": "localhost"
+        }
+      ]
+   }
+  ]
+}

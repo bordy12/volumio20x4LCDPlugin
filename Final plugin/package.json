@@ -1,0 +1,21 @@
+{
+	"name": "lcdcontroller",
+	"version": "0.8.0",
+	"description": "Plugin to send music information to a 20x4 LCD using I2C",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "Tom Niesse",
+	"license": "ISC",
+	"volumio_info": {
+		"prettyName": "LCDcontroller",
+		"icon": "fa-lightbulb-o",
+		"plugin_type": "user_interface"
+	},
+	"dependencies": {
+		"fs-extra": "^0.28.0",
+		"kew": "^0.7.0",
+		"v-conf": "^1.4.0"
+	}
+}
