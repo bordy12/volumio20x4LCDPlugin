@@ -1,15 +1,15 @@
 {
   "config_text_split_string": {
       "type": "string",
-      "value": ">"
-  },
-  "config_welcome_message_duration": {
-    "type": "string",
-    "value": "2"
+      "value": "scheidingstekenpuntexe"
   },
   "config_welcome_message_bool": {
     "type": "boolean",
     "value": true
+  },
+  "config_welcome_message_duration": {
+    "type": "string",
+    "value": "2"
   },
   "config_welcome_message_string_one": {
     "type": "string",
@@ -30,5 +30,9 @@
   "config_host": {
     "type": "string",
     "value": "localhost"
+  },
+  "config_lcd_address": {
+    "type": "string",
+    "value": "0x3F"
   }
 }

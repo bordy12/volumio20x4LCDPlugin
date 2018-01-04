@@ -8,9 +8,9 @@
       "element": "section",
       "label": "TRANSLATE.TITLE",
       "icon": "fa-plug",
-      "onSave": {"type":"controller", "endpoint":"user_interface/lcdcontroller", "method":"saveConf"},
+      "onSave": {"type":"controller", "endpoint":"user_interface/lcdcontroller", "method":"saveUIConfig"},
       "saveButton": {
-        "label": "Save",
+        "label": "TRANSLATE.SAVE",
         "data": [
           "textone",
           "texttwo",
@@ -80,6 +80,14 @@
           "doc": "TRANSLATE.HOSTDOC",
           "label": "TRANSLATE.HOSTLABEL",
           "value": "localhost"
+        },
+	{
+          "id": "lcd_address",
+          "type":"text",
+          "element": "input",
+          "doc": "TRANSLATE.LCDADDRESSDOC",
+          "label": "TRANSLATE.LCDADDRESSLABEL",
+          "value": "0x3F"
         }
       ]
    }
