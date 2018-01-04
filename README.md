@@ -23,19 +23,19 @@ The plugin can auto-update information when it changes, for exmaple, switching f
 - Click the gears-icon in the top-right
 - Click "PLUGINS"
 - Click "Upload Plugin"
-- Upload plugin.zip
-- After the plugin has been successfully installed, reboot volumio<br>Optional (will be automated in the future): You can SSH into volumio and run 'sudo /etc/init.d/volumioLCDservice start' instead of rebooting
+- Upload this plugin in zip-format
 
 ## How to uninstall the plugin
 The plugin can be uninstalled as any other Volumio plugin:
 - Go to the installed plugins and click "Uninstall"
 
-After uninstalling, the LCD might still show some text and it will look like it froze.<br>I will fix this in the future. It is nothing to worry about though.
+After uninstalling, the LCD might still show some text and it will look like it froze.<br>I will fix this in the future.
 
 ## Change plugin settings
 
-The plugin settings cannot be changed via the plugin-settings yet.<br>However, after installing the plugin, you can SSH into Volumio and change '/opt/LCDcontroller/settings.py' to tweak some settings, for example the welcome-message.<br>I will add plugin settings later.
+TODO: Make the plugin save and load settings properly
+The settings can be changed in the plugin's settings page. Go to the plugin manager, turn the plugin on if it's turned off and click "Settings"
 
 ## Turning the plugin on and off
 
-This plugin cannot be turned on or off via the plugin-settings yet. The plugin stays enabled until it is uninstalled.<br>I will add this feature in the future.
+This can also be done via the plugin-menu. After turning the plugin off, some text can still be displayed on the LCD-screen. I will fix this in the future
