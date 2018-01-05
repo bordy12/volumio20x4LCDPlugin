@@ -1,23 +1,25 @@
-# What text must the display show at boot? (Default: 'Welcome!' on the second line)
-def getWelcomeMessage():
-        welcome_message = {
-                "Line1": " ",
-                "Line2": "Welcome!",
-                "Line3": " ",
-                "Line4": " "
-                }
-        return welcome_message
-# How long should the welcome-message stay?
-def getWelcomeMessageDuration():
-        welcomeMessageDuration = 2
-        return welcomeMessageDuration
+import os.path
+import json
 
-# How often should the script check for new song/webradio info?
-def getInfoRefreshInterval():
-        infoRefreshInterval = 0.5
-        return infoRefreshInterval
-        
-# Where should the script get it's information from?
-def getHostIP():
-	volumioHost = '127.0.0.1'  # This can be an IP address or 'localhost'
-	return volumioHost
+def getSettings():
+	if(os.path.isfile('/data/configuration/user_interface/lcdcontroller/config.json')):
+		# There is a config.json created by the UIconfig settings-page. Use that one!
+		# Read config.json
+		settings_file = open('/data/configuration/user_interface/lcdcontroller/config.json')
+		settings_file_content = settings_file.read()
+		# Convert it's JSON content into a python-dictionary
+		settings_dictionary = json.loads(settings_file_content)
+		return settings_dictionary
+
+	elif(os.path.isfile('/data/plugins/user_interface/lcdcontroller/config.json')):
+		# Use the config.json that came with the plugin
+		# Read config.json
+		settings_file = open('/data/plugins/user_interface/lcdcontroller/config.json')
+		settings_file_content = settings_file.read()
+		# Convert it's JSON content into a python-dictionary
+		settings_dictionary = json.loads(settings_file_content)
+		return settings_dictionary
+
+	else:
+		# There is no config.json. This should not be happening. Exit the python script before it crashes or does something unexpected.
+		exit(1)

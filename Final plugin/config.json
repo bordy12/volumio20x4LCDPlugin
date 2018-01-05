@@ -1,11 +1,11 @@
 {
   "config_text_split_string": {
       "type": "string",
-      "value": "scheidingstekenpuntexe"
+      "value": "|"
   },
   "config_welcome_message_bool": {
     "type": "boolean",
-    "value": true
+    "value": false
   },
   "config_welcome_message_duration": {
     "type": "string",

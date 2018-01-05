@@ -28,5 +28,4 @@
 
   "LCDADDRESSLABEL":"I2C LCD Address",
   "LCDADDRESSDOC":"Not all I2C controllers are the same and not all LCD-displays use the same address to communicate with the host-system. This setting can be changed if your LCD or I2C device uses another address."
-
 }

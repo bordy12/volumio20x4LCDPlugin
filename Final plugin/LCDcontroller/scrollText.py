@@ -1,17 +1,76 @@
 #! /usr/bin/env python
 
-# Import settings.py
+# Import settings.py (settings.py is stored in the same folder as this file and contains a function that converts the config.json into a python dictionary)
 import settings
-# import the rest
+# Import other useful modules
 from os import *
 from time import *
 from sys import *
 from math import *
 from mpd import MPDClient
 
-#TODO, CONVERT CONFIG.JSON TO A DICT AND READ SETTINGS FROM IT!
+lcd_settings = settings.getSettings() # Ask settings.py for the settings
 
-mpd_host = settings.getHostIP()
+# Extract the setting that tells this script what text-separator to use when scrolling text
+text_split_string_setting = lcd_settings['config_text_split_string']['value']
+# Make sure the setting is not empty
+if(len(text_split_string_setting) <= 1):
+	text_split_string_setting = ' '
+
+# Extract the setting that tells this script what text-separator to use when scrolling text
+welcome_message_duration_setting = lcd_settings['config_welcome_message_duration']['value']
+# Make sure the setting is not empty
+if(len(welcome_message_duration_setting) <= 1):
+	welcome_message_duration_setting = ' '
+
+# Extract the setting that turns the welcome message on or off
+welcome_message_bool_setting = lcd_settings['config_welcome_message_bool']['value']
+# Convert 'false' into False and 'true' into True. If these values are not converted, this setting will cause errors because 'true' != True and 'True' != True
+if(welcome_message_bool_setting == 'true' or welcome_message_bool_setting == 'True'):
+	welcome_message_bool_setting = True
+elif(welcome_message_bool_setting == 'false' or welcome_message_bool_setting == 'False'):
+	welcome_message_bool_setting = False
+
+# Make sure this setting is an integer or float, and not any other type
+if not isinstance(welcome_message_duration_setting, int) or not not isinstance(welcome_message_duration_setting, float):
+	try:
+		welcome_message_duration_setting = int(welcome_message_duration_setting)
+	except:
+		# The user left the input-field for the welcome_message_duration-setting empty. This makes me assume that the user doesn't want a welcome-message anymore and tried to disable it by leaving this setting empty
+		welcome_message_duration_setting = 0
+		welcome_message_bool_setting = False
+
+# Extract the four lines of welcome-message the user set
+welcome_message_string_one_setting = lcd_settings['config_welcome_message_string_one']['value']
+# Make sure the setting is not empty 
+if(len(welcome_message_string_one_setting) <= 1):
+	welcome_message_string_one_setting = ' '
+
+welcome_message_string_two_setting = lcd_settings['config_welcome_message_string_two']['value']
+# Make sure the setting is not empty 
+if(len(welcome_message_string_two_setting) <= 1):
+	welcome_message_string_two_setting = ' '
+
+welcome_message_string_three_setting = lcd_settings['config_welcome_message_string_three']['value']
+# Make sure the setting is not empty 
+if(len(welcome_message_string_three_setting) <= 1):
+	welcome_message_string_three_setting = ' '
+
+welcome_message_string_four_setting = lcd_settings['config_welcome_message_string_four']['value']
+# Make sure the setting is not empty 
+if(len(welcome_message_string_four_setting) <= 1):
+	welcome_message_string_four_setting = ' '
+
+# Extract the MPD-host-setting. This setting let's MPDClient know which device to connect to (default=localhost)
+mpd_host_setting = lcd_settings['config_host']['value']
+# Make sure the setting is not empty 
+if(len(mpd_host_setting) <= 1):
+	# This script NEEDS mpd_host_setting. It cannot be left empty. To avoid crashing, set the setting to localhost if no host is configured.
+	mpd_host_setting = 'localhost'
+
+#lcd_address = lcd_settings['config_lcd_address']['value']
+
+mpd_host = mpd_host_setting
 mpd_port = "6600"
 mpd_password = "volumio"
 
@@ -27,15 +86,15 @@ my_lcd = lcd()
 #make lcd-positions just work properly
 lcd_position=[1,3,2,4]
 
-#define some options
-moveText = 1 #For stability, This should be remain 1. This script can handle >= 2 though, but it will look a bit weird as it is right now. DO NOT FEED THIS A FLOAT NUMBER!
-infoRefreshTimeWait = 0.2
-timeWaitTimeStamp = 0
-infoRefreshTimeStamp = time()
+# define some options
+moveText = 1 # How many characters to move each time. This should remain 1. Also, this should never have a float-value.
+infoRefreshTimeWait = 0.4 # How often should the script check for new song-/radio-info (value is in seconds)?
+timeWaitTimeStamp = 0 # This variable needs to be initialized with value 0
+infoRefreshTimeStamp = time() # This variable needs to be initialized with the value of time()
 timeWait = 1 # Amount of time to wait before moving a piece of text on the lcd
-lineTimeWait = 0  # Set to 0, unless the moving text should wait extra long before scrolling
+lineTimeWait = 0  # Should have a value of 0, unless the moving text should wait extra long before restarting the line-scrolling
 
-#making sure it doesn't throw errors
+# Make sure the script doesn't throw errors
 songInfo=[' ', ' ', ' ',' ']
 textOne = ' '
 textTwo = ' '
@@ -43,20 +102,16 @@ textThree = ' '
 textFour = ' '
 
 def sendToLCD(lineNum, textToDisplay): #This function will send a string to the LCD screen
-	#print('Send to LCD line ' + str(lineNum) + ': "' + str(textToDisplay) + '"')  #DEBUG (Will not print to LCD but to the SSH-shell!)
-        # TODO: Unicode support/disregard. If unicode chars are found, what to do? Dont send the string? Try to send them anyway? Send '????????????'?
         my_lcd.display_string(textToDisplay, lcd_position[lineNum])
-        #print(str(lineNum) + ': ' + str(textToDisplay)) #DEBUG!
 
-welcomeTimestamp = time()
-welcomeTime = settings.getWelcomeMessageDuration()
-welcomeMessage = settings.getWelcomeMessage()
+welcomeTimestamp = time() # This variable needs to be initialized with the value of time()
+
 # Show welcome message
-sendToLCD(0, welcomeMessage['Line1'])
-sendToLCD(1, welcomeMessage['Line2'])
-sendToLCD(2, welcomeMessage['Line3'])
-sendToLCD(3, welcomeMessage['Line4'])
-sleep(welcomeTime)
+sendToLCD(0, welcome_message_string_one_setting)
+sendToLCD(1, welcome_message_string_two_setting)
+sendToLCD(2, welcome_message_string_three_setting)
+sendToLCD(3, welcome_message_string_four_setting)
+sleep(welcome_message_duration_setting)
 
 def updateLCDinfo():
 	returnData = [' ', ' ', ' ', ' ']
@@ -67,7 +122,7 @@ def updateLCDinfo():
 			if('file' in str(currentSong)):
 				source = currentSong['file']
 				if 'http' in currentSong['file']: #Check for any webstreams before returning information
-					#It's a radio-stream from the interwebs! Peform some magic on the title, because it also contains the artist's name
+					#It's a radio-stream from the interwebs! Split the title at ' - ' or '-' into multiple lines, because it might contain the artist's name
 					radioName = ' '
 					extraInfo = ' '
 					extraInfoFound = False
@@ -110,8 +165,8 @@ def updateLCDinfo():
 					else:
 						returnData = [title, radioName, ' ', ' ']
 				else:
-					#It's not playing a web-stream, but a music file
-					# Always show tags first, then filenames
+					# It's not playing a web-stream, but a music file
+					# Try to extract as much info as possible from music files, either from reading the tags or from the filename
 					artistFoundBySplittingFilename = False
 					extraInfo = ' '
 					extraInfoFound = False
@@ -120,13 +175,13 @@ def updateLCDinfo():
 						title = currentSong['title']
 					else:
 						title = currentSong['file']
-						#Do not include .mp3, .wma, .flac etc in the song's name
+						#Do not include .mp3, .wma, .flac etc. in the song's name
 						if(str(title[-4]) == '.'):
 							title = title[0:-4]
 						elif(str(title[-5]) == '.'):
 							title = title[0:-5]
 						while('USB/' in title):
-							title = title[4::] # Remove all the '/USB' from the filename's path
+							title = title[4::] # Remove all the 'USB/' from the filename's path
 						while('INTERNAL/' in title):
 							title = title[9::] # Remove all the '/INTERNAL' from the filename's path
 						if ' - ' in title or ' : ' in title:
@@ -142,14 +197,14 @@ def updateLCDinfo():
 								artist = artist[1::]
 							elif(artist[-1] == ' '):
 								artist = artist[:-1]
-							#We already found the artist, stop looking for tags please
+							#We already found the artist, stop looking for tags, because the filename might contain more information
 							if(artist != '' or artist != ' '):
 								artistFoundBySplittingFilename = True
 							if(artist[0:1] == ' '):  # split() does it's job correctly, but I don't want a <space> at the beginning of informations
 								artist = artist[1::]  # So info=info-first_char
 							if(title[-1] == ' '):
 								title = title[:-1]
-							#Look for more info that might be useful to people. (some filenames can be '01 - title - artist.mp3'. They should be handled properly)
+							#Look for more info that might be useful to people, like the album-name
 							if(len(titleSplit) >= 3):
 								extraInfo = titleSplit[2]
 								extraInfoFound = True
@@ -195,10 +250,10 @@ try:
 	posLineThree=0
 	posLineFour=0
 
-	textLineOne =   textOne + " | " + textOne[0:20]
-	textLineTwo =   textTwo + " | " + textTwo[0:20]
-	textLineThree = textThree + " | " + textThree[0:20]
-	textLineFour =  textFour + " | " + textFour[0:20]
+	textLineOne =   textOne + text_split_string_setting + textOne[0:20]
+	textLineTwo =   textTwo + text_split_string_setting + textTwo[0:20]
+	textLineThree = textThree + text_split_string_setting + textThree[0:20]
+	textLineFour =  textFour + text_split_string_setting + textFour[0:20]
 	
 	writeLineOne = False
 	writeLineTwo = False
@@ -221,7 +276,7 @@ try:
 	toPrintTextLineFour = 0
 
 	while(True):
-		if(time()-infoRefreshTimeStamp >= settings.getInfoRefreshInterval()):
+		if(time()-infoRefreshTimeStamp >= infoRefreshTimeWait):
 			# It's time to update the information about the songs and such
 			songInfo = updateLCDinfo()
 			textOne = songInfo[0]
@@ -229,10 +284,10 @@ try:
 			textThree = songInfo[2]
 			textFour = songInfo[3]
 
-			newTextLineOne =   textOne + " | " + textOne[0:20]
-			newTextLineTwo =   textTwo + " | " + textTwo[0:20]
-			newTextLineThree = textThree + " | " + textThree[0:20]
-			newTextLineFour =  textFour + " | " + textFour[0:20]
+			newTextLineOne =   textOne + text_split_string_setting + textOne[0:20]
+			newTextLineTwo =   textTwo + text_split_string_setting + textTwo[0:20]
+			newTextLineThree = textThree + text_split_string_setting + textThree[0:20]
+			newTextLineFour =  textFour + text_split_string_setting + textFour[0:20]
 			#Now check for any changes
 			if(textLineOne != newTextLineOne):
 				# Update the text, because there is new text

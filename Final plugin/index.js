@@ -20,7 +20,7 @@ function lcdcontroller(context) {
 
 }
 
-// "Volumio needs this function" ~ The "how write a plugin" guide
+// Tell Volumio that the settings are saved in a file called config.json
 lcdcontroller.prototype.getConfigurationFiles = function()
 {
 	return ['config.json'];
@@ -36,11 +36,12 @@ lcdcontroller.prototype.onVolumioStart = function()
     return libQ.resolve();
 }
 
+// Tell Volumio what to do when the plugin gets enabled
 lcdcontroller.prototype.onStart = function() {
     var self = this;
     var defer=libQ.defer();
 
-    //Start a detached process, without those parent-child-relationships. This way, someone can turn the plugin on and off without destroying the index.js process
+    // Use spawn with option 'detached: true' to run a command. 'detached: false' will crash Volumio instantly, because 'child process /data/plugins/user_interface/lcdcontroller/LCDcontroller/scrollText.py' exited.
     spawn('/data/plugins/user_interface/lcdcontroller/LCDcontroller/scrollText.py', ['TODO_insert_any_arguments_here_later_please'], {
     	detached: true
     }); 
@@ -53,14 +54,14 @@ lcdcontroller.prototype.onStart = function() {
     return defer.promise;
 };
 
+// Tell Volumio what to do when the plugin gets disabled
 lcdcontroller.prototype.onStop = function() {
     var self = this;
     var defer=libQ.defer();
+    // Use spawn with option 'detached: true' to run a command. 'detached: false' will crash Volumio instantly, because 'child process /usr/bin/killall' exited.
     spawn('/usr/bin/killall', ['python'], {
     		detached: true
     });
-    // Tell the user the plugin stopped
-    self.commandRouter.pushToastMessage('info', "LCDcontroller", "Plugin stopped");
     // Once the Plugin has successfull stopped resolve the promise
     defer.resolve();
 
@@ -75,6 +76,7 @@ lcdcontroller.prototype.onRestart = function() {
 
 // Configuration Methods -----------------------------------------------------------------------------
 
+// Load the settings and display them in the "settings"-page
 lcdcontroller.prototype.getUIConfig = function() {
     var defer = libQ.defer();
 	var self = this;
@@ -86,31 +88,66 @@ lcdcontroller.prototype.getUIConfig = function() {
 		__dirname + '/UIConfig.json')
 		.then(function(uiconf)
 		{
-			//uiconf.sections[0].content[0].value.value = configContents['config_text_split_string']['value'];
-			self.commandRouter.pushToastMessage('info', "LCDcontroller", "UIconf loaded");
+			// Load everything from config.json into the UIconfig
+			// Example: uiconf.sections[0].content[0].value = self.config.get('<setting_name>');    // Where <setting_name> is the name of the setting stored in config.json
+
+			// Load config_text_split_string into UIconfig
+			uiconf.sections[0].content[0].value = self.config.get('config_text_split_string');
+			// Load config_welcome_message_bool into UIconfig
+			uiconf.sections[0].content[1].value = self.config.get('config_welcome_message_bool');
+			// Load config_welcome_message_duration into UIconfig
+			uiconf.sections[0].content[2].value = self.config.get('config_welcome_message_duration');
+			// Load config_welcome_message_string_one into UIconfig
+			uiconf.sections[0].content[3].value = self.config.get('config_welcome_message_string_one');
+			// Load config_welcome_message_string_two into UIconfig
+			uiconf.sections[0].content[4].value = self.config.get('config_welcome_message_string_two');
+			// Load config_welcome_message_string_three into UIconfig
+			uiconf.sections[0].content[5].value = self.config.get('config_welcome_message_string_three');
+			// Load config_welcome_message_string_four into UIconfig
+			uiconf.sections[0].content[6].value = self.config.get('config_welcome_message_string_four');
+			// Load config_host into UIconfig
+			uiconf.sections[0].content[7].value = self.config.get('config_host');
+			// Load config_lcd_address into UIconfig
+			uiconf.sections[0].content[8].value = self.config.get('config_lcd_address');
+
+			// Tell Volumio everything went very well
 			defer.resolve(uiconf);
 		})
 		.fail(function()
 		{
+			// Something went wrong. Tell the user about it and abort loading the settings-page.
+			self.commandRouter.pushToastMessage('error', "LCDcontroller", "Error: Could not load settings");
 			defer.reject(new Error());
 		});
 
 	return defer.promise;
 };
 
+// Function to save the settings the user wants to have
 lcdcontroller.prototype.saveUIConfig = function(data) {
    var defer = libQ.defer();
    var self = this;
+   // For every setting, save it's value to config.json
+   // Example: self.config.set('<setting_name>', data['<UIconfig_value>']);   // Where <setting_name> is stored in config.json and <UIconfig_value> retreived from the UIconfig.
+   
+   // Save text_split_string's value in config_text_split_string in config.json
    self.config.set('config_text_split_string', data['text_split_string']);
+   // Save welcome_message_bool's value in config_welcome_message_bool in config.json
    self.config.set('config_welcome_message_bool', data['welcome_message_bool']);
+   // Save welcome_message_duration's value in config_welcome_message_duration in config.json
    self.config.set('config_welcome_message_duration', data['welcome_message_duration']);
+   // Save welcome_message_string_one's value in config_welcome_message_string_one in config.json
    self.config.set('config_welcome_message_string_one', data['welcome_message_string_one']);
+   // Save welcome_message_string_two's value in config_welcome_message_string_two in config.json
    self.config.set('config_welcome_message_string_two', data['welcome_message_string_two']);
+   // Save welcome_message_string_three's value in config_welcome_message_string_three in config.json
    self.config.set('config_welcome_message_string_three', data['welcome_message_string_three']);
+   // Save welcome_message_string_four's value in config_welcome_message_string_four in config.json
    self.config.set('config_welcome_message_string_four', data['welcome_message_string_four']);
+   // Save host's value in config_host in config.json
    self.config.set('config_host', data['host']);
+   // Save lcd_address's value in config_lcd_address in config.json
    self.config.set('config_lcd_address', data['lcd_address']);
-   self.commandRouter.pushToastMessage('info', "LCDcontroller", "Settings have been saved");
    return defer.promise;
 };
 
@@ -121,7 +158,7 @@ lcdcontroller.prototype.setUIConfig = function(data) {
 
 lcdcontroller.prototype.getConf = function(varName) {
 	var self = this;
-	return ['config.json']
+	return ['config.json'];
 };
 
 lcdcontroller.prototype.setConf = function(varName, varValue) {

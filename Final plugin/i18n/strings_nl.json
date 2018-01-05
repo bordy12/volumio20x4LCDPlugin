@@ -28,5 +28,4 @@
 
   "LCDADDRESSLABEL":"I2C LCD Adres",
   "LCDADDRESSDOC":"Sommige LCD-schermen hebben een ander adres nodig om via I2C te kunnen communiceren. Via deze instelling kan het LCD-adres gewijzigd worden."
-
 }
