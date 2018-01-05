@@ -33,8 +33,7 @@ After uninstalling, the LCD might still show some text and it will look like it 
 
 ## Change plugin settings
 
-TODO: Make the plugin save and load settings properly
-The settings can be changed in the plugin's settings page. Go to the plugin manager, turn the plugin on if it's turned off and click "Settings"
+The settings can be changed in the plugin's settings page. Go to the plugin manager, turn the plugin on if it's turned off and click "Settings".
 
 ## Turning the plugin on and off
 
