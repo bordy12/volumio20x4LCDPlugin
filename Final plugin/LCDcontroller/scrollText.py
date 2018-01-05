@@ -9,6 +9,8 @@ from sys import *
 from math import *
 from mpd import MPDClient
 
+#TODO, CONVERT CONFIG.JSON TO A DICT AND READ SETTINGS FROM IT!
+
 mpd_host = settings.getHostIP()
 mpd_port = "6600"
 mpd_password = "volumio"

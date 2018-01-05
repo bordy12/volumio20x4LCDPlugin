@@ -12,9 +12,15 @@
       "saveButton": {
         "label": "TRANSLATE.SAVE",
         "data": [
-          "textone",
-          "texttwo",
-          "boolset"
+          "text_split_string",
+          "welcome_message_bool",
+          "welcome_message_duration",
+	  "welcome_message_string_one",
+	  "welcome_message_string_two",
+	  "welcome_message_string_three",
+	  "welcome_message_string_four",
+	  "host",
+	  "lcd_address"
         ]
       },
       "content": [

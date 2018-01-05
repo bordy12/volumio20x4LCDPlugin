@@ -6,7 +6,8 @@ var config = new (require('v-conf'))();
 var exec = require('child_process').exec;
 var execSync = require('child_process').execSync;
 var spawn = require('child_process').spawn;
-var jsonfile = require('jsonfile');
+var json = require('json');
+var stringify = require('json-stringify'); 
 
 module.exports = lcdcontroller;
 function lcdcontroller(context) {
@@ -86,6 +87,7 @@ lcdcontroller.prototype.getUIConfig = function() {
 		.then(function(uiconf)
 		{
 			//uiconf.sections[0].content[0].value.value = configContents['config_text_split_string']['value'];
+			self.commandRouter.pushToastMessage('info', "LCDcontroller", "UIconf loaded");
 			defer.resolve(uiconf);
 		})
 		.fail(function()
@@ -99,13 +101,16 @@ lcdcontroller.prototype.getUIConfig = function() {
 lcdcontroller.prototype.saveUIConfig = function(data) {
    var defer = libQ.defer();
    var self = this;
-
-   // For some weird reason, the command below creates the entire config.json file... I'll take it for now, but I have no idea why this happens...
-   self.config.set('config_text_split_string', data);
-   //Log the I2c LCD setting for now
-   self.logger.info("LCD-ADDRESS LOG DEBUG: " + data.toString());
-   self.commandRouter.pushToastMessage('info', "Save config", "Button pressed");
-   defer.resolve();
+   self.config.set('config_text_split_string', data['text_split_string']);
+   self.config.set('config_welcome_message_bool', data['welcome_message_bool']);
+   self.config.set('config_welcome_message_duration', data['welcome_message_duration']);
+   self.config.set('config_welcome_message_string_one', data['welcome_message_string_one']);
+   self.config.set('config_welcome_message_string_two', data['welcome_message_string_two']);
+   self.config.set('config_welcome_message_string_three', data['welcome_message_string_three']);
+   self.config.set('config_welcome_message_string_four', data['welcome_message_string_four']);
+   self.config.set('config_host', data['host']);
+   self.config.set('config_lcd_address', data['lcd_address']);
+   self.commandRouter.pushToastMessage('info', "LCDcontroller", "Settings have been saved");
    return defer.promise;
 };
 

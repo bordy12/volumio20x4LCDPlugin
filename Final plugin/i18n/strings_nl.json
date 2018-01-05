@@ -12,16 +12,16 @@
   "WELCOMEMESSAGEDURATIONDOC":"Hoeveel seconden moet het welkomstbericht blijven staan op het LCD-scherm?",
 
   "WELCOMEMESSAGELABEL1":"Welkomsttekst regel 1",
-  "WELCOMEMESSAGEDOC1":"Wanneer de plugin start wordt er, indien ingesteld een welkomstbericht weergegeven op het LCD-scherm. Deze instelling kan worden gewijzigd om op regel 1 tekst weer te geven van maximaal 20 karakters.",
+  "WELCOMEMESSAGEDOC1":"Wanneer de plugin start wordt er, indien ingesteld een welkomstbericht weergegeven op het LCD-scherm. Deze instelling kan worden gewijzigd om op regel 1 tekst weer te geven van maximaal 20 karakters. De tekst wordt automatisch gecentreerd.",
 
   "WELCOMEMESSAGELABEL2":"Welkomsttekst regel 2",
-  "WELCOMEMESSAGEDOC2":"Wanneer de plugin start wordt er, indien ingesteld een welkomstbericht weergegeven op het LCD-scherm. Deze instelling kan worden gewijzigd om op regel 2 tekst weer te geven van maximaal 20 karakters.",
+  "WELCOMEMESSAGEDOC2":"Wanneer de plugin start wordt er, indien ingesteld een welkomstbericht weergegeven op het LCD-scherm. Deze instelling kan worden gewijzigd om op regel 2 tekst weer te geven van maximaal 20 karakters. De tekst wordt automatisch gecentreerd.",
 
   "WELCOMEMESSAGELABEL3":"Welkomsttekst regel 3",
-  "WELCOMEMESSAGEDOC3":"Wanneer de plugin start wordt er, indien ingesteld een welkomstbericht weergegeven op het LCD-scherm. Deze instelling kan worden gewijzigd om op regel 3 tekst weer te geven van maximaal 20 karakters.",
+  "WELCOMEMESSAGEDOC3":"Wanneer de plugin start wordt er, indien ingesteld een welkomstbericht weergegeven op het LCD-scherm. Deze instelling kan worden gewijzigd om op regel 3 tekst weer te geven van maximaal 20 karakters. De tekst wordt automatisch gecentreerd.",
 
   "WELCOMEMESSAGELABEL4":"Welkomsttekst regel 4",
-  "WELCOMEMESSAGEDOC4":"Wanneer de plugin start wordt er, indien ingesteld een welkomstbericht weergegeven op het LCD-scherm. Deze instelling kan worden gewijzigd om op regel 4 tekst weer te geven van maximaal 20 karakters.",
+  "WELCOMEMESSAGEDOC4":"Wanneer de plugin start wordt er, indien ingesteld een welkomstbericht weergegeven op het LCD-scherm. Deze instelling kan worden gewijzigd om op regel 4 tekst weer te geven van maximaal 20 karakters. De tekst wordt automatisch gecentreerd.",
 
   "HOSTLABEL":"MPD-host",
   "HOSTDOC":"Deze plugin gebruikt MPD (pakket python-mpd) om informatie op te vragen van Volumio. Volumio heeft een mooie manier om gemakkelijk informatie over afspelende nummers te delen met andere Volumio-apparaten. Indien Volumio's manier niet werkt, kan bij deze instelling het IP-adres van een ander Volumio-apparaat worden ingevuld, om daar rechtstreeks informatie van op te vragen. Het is aan te raden om het externe Volumio-apparaat alvorens een statisch IP-adres te geven.",

@@ -27,11 +27,11 @@
     "type": "string",
     "value": " "
   },
-  "config_host": {
+    "config_host": {
     "type": "string",
     "value": "localhost"
   },
-  "config_lcd_address": {
+    "config_lcd_address": {
     "type": "string",
     "value": "0x3F"
   }
