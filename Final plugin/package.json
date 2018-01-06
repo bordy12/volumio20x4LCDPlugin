@@ -10,7 +10,7 @@
 	"license": "ISC",
 	"volumio_info": {
 		"prettyName": "LCDcontroller",
-		"icon": "fa-lightbulb-o",
+		"icon": "microchip",
 		"plugin_type": "user_interface"
 	},
 	"dependencies": {

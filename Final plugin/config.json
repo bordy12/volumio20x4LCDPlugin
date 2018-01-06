@@ -13,19 +13,19 @@
   },
   "config_welcome_message_string_one": {
     "type": "string",
-    "value": " "
+    "value": ""
   },
   "config_welcome_message_string_two": {
     "type": "string",
-    "value": " "
+    "value": ""
   },
   "config_welcome_message_string_three": {
     "type": "string",
-    "value": " "
+    "value": ""
   },
   "config_welcome_message_string_four": {
     "type": "string",
-    "value": " "
+    "value": ""
   },
     "config_host": {
     "type": "string",

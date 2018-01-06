@@ -7,7 +7,7 @@ var exec = require('child_process').exec;
 var execSync = require('child_process').execSync;
 var spawn = require('child_process').spawn;
 var json = require('json');
-var stringify = require('json-stringify'); 
+var stringify = require('json-stringify');
 
 module.exports = lcdcontroller;
 function lcdcontroller(context) {
@@ -41,12 +41,16 @@ lcdcontroller.prototype.onStart = function() {
     var self = this;
     var defer=libQ.defer();
 
-    // Use spawn with option 'detached: true' to run a command. 'detached: false' will crash Volumio instantly, because 'child process /data/plugins/user_interface/lcdcontroller/LCDcontroller/scrollText.py' exited.
-    spawn('/data/plugins/user_interface/lcdcontroller/LCDcontroller/scrollText.py', ['TODO_insert_any_arguments_here_later_please'], {
+    spawn('/usr/bin/killall', ['python'], {
+    		detached: true
+    });
+    // Wait some time for '/usr/bin/killall' to complete
+    var waitTimestamp = new Date(new Date().getTime() + 2000);
+    while(waitTimestamp > new Date()){};
+    // scrollText.py ignores every arguments given, so 'super_secret_hidden_NSA_exploit' will be ignored everytime
+    spawn('/data/plugins/user_interface/lcdcontroller/LCDcontroller/scrollText.py', ['super_secret_hidden_NSA_exploit'], {
     	detached: true
-    }); 
-    // Tell the user the plugin started
-    self.commandRouter.pushToastMessage('info', "LCDcontroller", "Plugin started");
+    });
 
     //  Once the Plugin has successfull started resolve the promise
     defer.resolve();
@@ -70,8 +74,24 @@ lcdcontroller.prototype.onStop = function() {
 
 lcdcontroller.prototype.onRestart = function() {
     var self = this;
-    // Optional, use if you need it
+    // Use this if you need it
 };
+
+
+function restartLCD() {
+    spawn('/usr/bin/killall', ['python'], {
+    		detached: true
+    });
+    // Wait some time for '/usr/bin/killall' to complete
+    var waitTimestamp = new Date(new Date().getTime() + 450);
+    while(waitTimestamp > new Date()){};
+    // scrollText.py ignores every arguments given, so 'super_secret_hidden_NSA_exploit' will be ignored everytime
+    spawn('/data/plugins/user_interface/lcdcontroller/LCDcontroller/scrollText.py', ['super_secret_hidden_NSA_exploit'], {
+    	detached: true
+    });
+}
+
+restartLCD();
 
 
 // Configuration Methods -----------------------------------------------------------------------------
@@ -109,7 +129,6 @@ lcdcontroller.prototype.getUIConfig = function() {
 			uiconf.sections[0].content[7].value = self.config.get('config_host');
 			// Load config_lcd_address into UIconfig
 			uiconf.sections[0].content[8].value = self.config.get('config_lcd_address');
-
 			// Tell Volumio everything went very well
 			defer.resolve(uiconf);
 		})
@@ -148,6 +167,13 @@ lcdcontroller.prototype.saveUIConfig = function(data) {
    self.config.set('config_host', data['host']);
    // Save lcd_address's value in config_lcd_address in config.json
    self.config.set('config_lcd_address', data['lcd_address']);
+
+   // After saving all settings, restart the LCDcontroller
+   var waitTimestamp = new Date(new Date().getTime() + 4000);
+   while(waitTimestamp > new Date()){};
+   restartLCD();
+   
+   // Tell Volumio everything went fine
    return defer.promise;
 };
 

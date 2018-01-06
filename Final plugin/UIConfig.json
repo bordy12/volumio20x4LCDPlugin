@@ -45,6 +45,7 @@
           "element": "input",
           "doc": "TRANSLATE.WELCOMEMESSAGEDURATIONDOC",
           "label": "TRANSLATE.WELCOMEMESSAGEDURATIONLABEL",
+	  "visibleIf": {"field": "welcome_message_bool", "value": true},
           "value": "2"
         },
         {
@@ -53,7 +54,8 @@
           "element": "input",
           "doc": "TRANSLATE.WELCOMEMESSAGEDOC1",
           "label": "TRANSLATE.WELCOMEMESSAGELABEL1",
-          "value": " "
+	  "visibleIf": {"field": "welcome_message_bool", "value": true},
+          "value": ""
         },
 	{
           "id": "welcome_message_string_two",
@@ -61,7 +63,8 @@
           "element": "input",
           "doc": "TRANSLATE.WELCOMEMESSAGEDOC2",
           "label": "TRANSLATE.WELCOMEMESSAGELABEL2",
-          "value": " "
+	  "visibleIf": {"field": "welcome_message_bool", "value": true},
+          "value": ""
         },
 	{
           "id": "welcome_message_string_three",
@@ -69,7 +72,8 @@
           "element": "input",
           "doc": "TRANSLATE.WELCOMEMESSAGEDOC3",
           "label": "TRANSLATE.WELCOMEMESSAGELABEL3",
-          "value": " "
+	  "visibleIf": {"field": "welcome_message_bool", "value": true},
+          "value": ""
         },
 	{
           "id": "welcome_message_string_four",
@@ -77,7 +81,8 @@
           "element": "input",
           "doc": "TRANSLATE.WELCOMEMESSAGEDOC4",
           "label": "TRANSLATE.WELCOMEMESSAGELABEL4",
-          "value": " "
+	  "visibleIf": {"field": "welcome_message_bool", "value": true},
+          "value": ""
         },
 	{
           "id": "host",

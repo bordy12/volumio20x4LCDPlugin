@@ -11,64 +11,72 @@ from mpd import MPDClient
 
 lcd_settings = settings.getSettings() # Ask settings.py for the settings
 
-# Extract the setting that tells this script what text-separator to use when scrolling text
+# Extract all useful settings for this script
 text_split_string_setting = lcd_settings['config_text_split_string']['value']
-# Make sure the setting is not empty
-if(len(text_split_string_setting) <= 1):
-	text_split_string_setting = ' '
-
-# Extract the setting that tells this script what text-separator to use when scrolling text
 welcome_message_duration_setting = lcd_settings['config_welcome_message_duration']['value']
-# Make sure the setting is not empty
-if(len(welcome_message_duration_setting) <= 1):
-	welcome_message_duration_setting = ' '
-
-# Extract the setting that turns the welcome message on or off
 welcome_message_bool_setting = lcd_settings['config_welcome_message_bool']['value']
-# Convert 'false' into False and 'true' into True. If these values are not converted, this setting will cause errors because 'true' != True and 'True' != True
+welcome_message_string_one_setting = lcd_settings['config_welcome_message_string_one']['value']
+welcome_message_string_two_setting = lcd_settings['config_welcome_message_string_two']['value']
+welcome_message_string_three_setting = lcd_settings['config_welcome_message_string_three']['value']
+welcome_message_string_four_setting = lcd_settings['config_welcome_message_string_four']['value']
+mpd_host_setting = lcd_settings['config_host']['value']
+
+# Debug, print all the settings before checking the settings
+print('\nBEFORE:\n')
+print(text_split_string_setting)
+print(welcome_message_duration_setting)
+print(welcome_message_bool_setting)
+print(welcome_message_string_one_setting)
+print(welcome_message_string_two_setting)
+print(welcome_message_string_three_setting)
+print(welcome_message_string_four_setting)
+print(mpd_host_setting)
+
+# Perform some checks to see if the settings are in the right format/type and are not empty
+if(len(text_split_string_setting) <= 0):
+	text_split_string_setting = '  '
+else:
+	text_split_string_setting = ' ' + str(text_split_string_setting) + ' '
+if(len(welcome_message_duration_setting) <= 0):
+	welcome_message_duration_setting = ' '
+if(len(str(welcome_message_duration_setting)) < 1):
+	# I don't know what the user want when they leave the input field for welcome_message_duration empty or enter non-int chars, so I'll just turn the feature off
+	welcome_message_duration_setting = 0
+	welcome_message_bool_setting = False
+elif(type(welcome_message_duration_setting) != int):
+	# Try to convert the setting into an int
+	try:
+		welcome_message_duration_setting = int(welcome_message_duration_setting)
+	except:
+		# The setting could not be converted to an int, turn it off
+		welcome_message_duration_setting = 0
+		welcome_message_bool_setting = False
 if(welcome_message_bool_setting == 'true' or welcome_message_bool_setting == 'True'):
 	welcome_message_bool_setting = True
 elif(welcome_message_bool_setting == 'false' or welcome_message_bool_setting == 'False'):
 	welcome_message_bool_setting = False
-
-# Make sure this setting is an integer or float, and not any other type
-if not isinstance(welcome_message_duration_setting, int) or not not isinstance(welcome_message_duration_setting, float):
-	try:
-		welcome_message_duration_setting = int(welcome_message_duration_setting)
-	except:
-		# The user left the input-field for the welcome_message_duration-setting empty. This makes me assume that the user doesn't want a welcome-message anymore and tried to disable it by leaving this setting empty
-		welcome_message_duration_setting = 0
-		welcome_message_bool_setting = False
-
-# Extract the four lines of welcome-message the user set
-welcome_message_string_one_setting = lcd_settings['config_welcome_message_string_one']['value']
-# Make sure the setting is not empty 
-if(len(welcome_message_string_one_setting) <= 1):
+if(len(welcome_message_string_one_setting) <= 0):
 	welcome_message_string_one_setting = ' '
-
-welcome_message_string_two_setting = lcd_settings['config_welcome_message_string_two']['value']
-# Make sure the setting is not empty 
-if(len(welcome_message_string_two_setting) <= 1):
+if(len(welcome_message_string_two_setting) <= 0):
 	welcome_message_string_two_setting = ' '
-
-welcome_message_string_three_setting = lcd_settings['config_welcome_message_string_three']['value']
-# Make sure the setting is not empty 
-if(len(welcome_message_string_three_setting) <= 1):
+if(len(welcome_message_string_three_setting) <= 0):
 	welcome_message_string_three_setting = ' '
-
-welcome_message_string_four_setting = lcd_settings['config_welcome_message_string_four']['value']
-# Make sure the setting is not empty 
-if(len(welcome_message_string_four_setting) <= 1):
+if(len(welcome_message_string_four_setting) <= 0):
 	welcome_message_string_four_setting = ' '
-
-# Extract the MPD-host-setting. This setting let's MPDClient know which device to connect to (default=localhost)
-mpd_host_setting = lcd_settings['config_host']['value']
-# Make sure the setting is not empty 
-if(len(mpd_host_setting) <= 1):
-	# This script NEEDS mpd_host_setting. It cannot be left empty. To avoid crashing, set the setting to localhost if no host is configured.
+if(len(mpd_host_setting) <= 0):
+	# This script NEEDS mpd_host_setting. It cannot be left empty. To avoid errors, set the setting to localhost if no host is configured.
 	mpd_host_setting = 'localhost'
 
-#lcd_address = lcd_settings['config_lcd_address']['value']
+# Debug, print all the settings after checking the settings
+print('\nAFTER:\n')
+print(text_split_string_setting)
+print(welcome_message_duration_setting)
+print(welcome_message_bool_setting)
+print(welcome_message_string_one_setting)
+print(welcome_message_string_two_setting)
+print(welcome_message_string_three_setting)
+print(welcome_message_string_four_setting)
+print(mpd_host_setting)
 
 mpd_host = mpd_host_setting
 mpd_port = "6600"
@@ -77,13 +85,13 @@ mpd_password = "volumio"
 client = MPDClient()
 client.connect(mpd_host, mpd_port)
 
-#import lcd-related python libs
+#import LCD-related python libs
 from lcd_display import lcd
 
-#make sure python knows what an lcd is
+#make sure python knows what an LCD is
 my_lcd = lcd()
 
-#make lcd-positions just work properly
+#make lcd-positions work properly
 lcd_position=[1,3,2,4]
 
 # define some options
@@ -106,12 +114,19 @@ def sendToLCD(lineNum, textToDisplay): #This function will send a string to the 
 
 welcomeTimestamp = time() # This variable needs to be initialized with the value of time()
 
-# Show welcome message
-sendToLCD(0, welcome_message_string_one_setting)
-sendToLCD(1, welcome_message_string_two_setting)
-sendToLCD(2, welcome_message_string_three_setting)
-sendToLCD(3, welcome_message_string_four_setting)
-sleep(welcome_message_duration_setting)
+# Make sure the LCD displays normal text when spoken to
+sendToLCD(0, ' ')
+sendToLCD(1, ' ')
+sendToLCD(2, ' ')
+sendToLCD(3, ' ')
+
+# Show welcome message if the user enabled the feature
+if(welcome_message_bool_setting == True):
+	sendToLCD(0, welcome_message_string_one_setting)
+	sendToLCD(1, welcome_message_string_two_setting)
+	sendToLCD(2, welcome_message_string_three_setting)
+	sendToLCD(3, welcome_message_string_four_setting)
+	sleep(welcome_message_duration_setting)
 
 def updateLCDinfo():
 	returnData = [' ', ' ', ' ', ' ']

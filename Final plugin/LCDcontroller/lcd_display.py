@@ -1,12 +1,16 @@
 import i2c_lib
 from time import sleep
 import settings
+import os
 
 lcd_settings = settings.getSettings() # Ask settings.py for the settings
 lcd_address_setting = lcd_settings['config_lcd_address']['value'] # This seting tells Python what address to use to communicate with the I2C-LCD
 
-# LCD Address
-ADDRESS = lcd_address_setting
+# Save the ADDRESS-setting to lcd_setting.py, which we can then import to get a hex-int-type
+os.system('echo "ADDRESS = ' + lcd_address_setting + '" > /data/plugins/user_interface/lcdcontroller/LCDcontroller/lcd_setting.py')
+
+# LCD Address, get this from the lcd_address.py file that just got created
+from lcd_address import *
 
 # commands
 LCD_CLEARDISPLAY = 0x01
