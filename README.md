@@ -13,17 +13,26 @@ The plugin can display information about music files and webradio's when they ar
   - Displaying music files, either the embedded tags or the filename
   - Displaying elapsed time for music files
   - Displaying a pause icon next to the elapsed time for music files if the music is paused at any time
-  - Separating '01 - title - artist' into<br>01<br>title<br>artist<br>for webradios and music files
+  - Separating 'title - artist-name - album-name' into<br>title<br>artist-name<br>album-name<br>for webradios and music files
   - Displaying a welcome-message at startup (see "Change plugin settings" on how to customize this)
 
 The plugin can auto-update information when it changes, for exmaple, switching from webradio to a music file, pausing music files, etc.
 
 ## How to install the plugin
+
+- Download plugin.zip from this GitHub-page
 - Go to http://your_volumio_name.local (or http://your_volumio_ip/ if the first option does not work)
-- Click the gears-icon in the top-right
+- When you see the Volumio-interface, click the gears-icon in the top-right
 - Click "PLUGINS"
 - Click "Upload Plugin"
-- Upload this plugin in zip-format
+- Upload plugin.zip
+
+### How to bundle the plugin myself?
+- Download all the files from this GitHub-page
+- In your file-manager, go into the "plugin"-folder (this folder contains the source code)
+- Select all the files in this folder and put them in a zip-file (the name of the zip-file does not matter)
+- If another version of this plugin is already installed on Volumio, remove it.
+- Upload the <pluginname>.zip you just created to Volumio
 
 ## How to uninstall the plugin
 The plugin can be uninstalled as any other Volumio plugin:
