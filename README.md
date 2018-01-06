@@ -14,7 +14,7 @@ The plugin can display information about music files and webradio's when they ar
   - Displaying elapsed time for music files
   - Displaying a pause icon next to the elapsed time for music files if the music is paused at any time
   - Separating 'title - artist-name - album-name' into<br>title<br>artist-name<br>album-name<br>for webradios and music files
-  - Displaying a welcome-message at startup (see "Change plugin settings" on how to customize this)
+  - Displaying a welcome-message at startup
 
 The plugin can auto-update information when it changes, for exmaple, switching from webradio to a music file, pausing music files, etc.
 
@@ -42,7 +42,7 @@ After uninstalling, the LCD might still show some text and it will look like it 
 
 ## Change plugin settings
 
-The settings can be changed in the plugin's settings page. Go to the plugin manager, turn the plugin on if it's turned off and click "Settings".
+The settings can be changed in the plugin's settings page. In Volumio: Go to the plugin manager, turn the plugin on if it is currently turned off and click "Settings".
 
 ## Turning the plugin on and off
 
