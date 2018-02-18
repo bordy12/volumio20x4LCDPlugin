@@ -21,17 +21,6 @@ welcome_message_string_three_setting = lcd_settings['config_welcome_message_stri
 welcome_message_string_four_setting = lcd_settings['config_welcome_message_string_four']['value']
 mpd_host_setting = lcd_settings['config_host']['value']
 
-# Debug, print all the settings before checking the settings
-print('\nBEFORE:\n')
-print(text_split_string_setting)
-print(welcome_message_duration_setting)
-print(welcome_message_bool_setting)
-print(welcome_message_string_one_setting)
-print(welcome_message_string_two_setting)
-print(welcome_message_string_three_setting)
-print(welcome_message_string_four_setting)
-print(mpd_host_setting)
-
 # Perform some checks to see if the settings are in the right format/type and are not empty
 if(len(text_split_string_setting) <= 0):
 	text_split_string_setting = '  '
@@ -55,28 +44,28 @@ if(welcome_message_bool_setting == 'true' or welcome_message_bool_setting == 'Tr
 	welcome_message_bool_setting = True
 elif(welcome_message_bool_setting == 'false' or welcome_message_bool_setting == 'False'):
 	welcome_message_bool_setting = False
+
+# Check the length of messages
 if(len(welcome_message_string_one_setting) <= 0):
 	welcome_message_string_one_setting = ' '
+elif(len(welcome_message_string_one_setting) > 20):
+	welcome_message_string_one_setting = welcome_message_string_one_setting[:20]
 if(len(welcome_message_string_two_setting) <= 0):
 	welcome_message_string_two_setting = ' '
+elif(len(welcome_message_string_two_setting) > 20):
+	welcome_message_string_two_setting = welcome_message_string_two_setting[:20]
 if(len(welcome_message_string_three_setting) <= 0):
 	welcome_message_string_three_setting = ' '
+elif(len(welcome_message_string_three_setting) > 20):
+	welcome_message_string_three_setting = welcome_message_string_three_setting[:20]
 if(len(welcome_message_string_four_setting) <= 0):
 	welcome_message_string_four_setting = ' '
+elif(len(welcome_message_string_four_setting) > 20):
+	welcome_message_string_four_setting = welcome_message_string_four_setting[:20]
 if(len(mpd_host_setting) <= 0):
 	# This script NEEDS mpd_host_setting. It cannot be left empty. To avoid errors, set the setting to localhost if no host is configured.
 	mpd_host_setting = 'localhost'
-
-# Debug, print all the settings after checking the settings
-print('\nAFTER:\n')
-print(text_split_string_setting)
-print(welcome_message_duration_setting)
-print(welcome_message_bool_setting)
-print(welcome_message_string_one_setting)
-print(welcome_message_string_two_setting)
-print(welcome_message_string_three_setting)
-print(welcome_message_string_four_setting)
-print(mpd_host_setting)
+	# Maybe a TODO for later: check if host is reachable and/or reconnect if connection lost
 
 mpd_host = mpd_host_setting
 mpd_port = "6600"
@@ -110,7 +99,7 @@ textThree = ' '
 textFour = ' '
 
 def sendToLCD(lineNum, textToDisplay): #This function will send a string to the LCD screen
-        my_lcd.display_string(textToDisplay, lcd_position[lineNum])
+    my_lcd.display_string(textToDisplay, lcd_position[lineNum])
 
 welcomeTimestamp = time() # This variable needs to be initialized with the value of time()
 
