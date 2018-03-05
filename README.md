@@ -21,7 +21,7 @@ The plugin can auto-update information when it changes, for exmaple, switching f
 ## How to install the plugin
 
 It seems that Volumio does not do file-upload anymore, as told here:
-https://volumio.org/forum/way-upload-unofficial-plugin-t9155.html
+https://volumio.org/forum/way-upload-unofficial-plugin-t9155.html.
 I will look for a fitting solution to this.
 
 ### How to bundle the plugin myself?
