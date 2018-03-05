@@ -20,12 +20,9 @@ The plugin can auto-update information when it changes, for exmaple, switching f
 
 ## How to install the plugin
 
-- Download plugin.zip from this GitHub-page
-- Go to http://your_volumio_name.local (or http://your_volumio_ip/ if the first option does not work)
-- When you see the Volumio-interface, click the gears-icon in the top-right
-- Click "PLUGINS"
-- Click "Upload Plugin"
-- Upload plugin.zip
+It seems that Volumio does not do file-upload anymore, as told here:
+https://volumio.org/forum/way-upload-unofficial-plugin-t9155.html
+I will look for a fitting solution to this.
 
 ### How to bundle the plugin myself?
 - Download all the files from this GitHub-page
