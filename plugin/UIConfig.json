@@ -32,6 +32,24 @@
           "label": "TRANSLATE.TEXTSPLITLABEL",
           "value": "|"
         },
+        {
+          "id": "text_scroll",
+          "element": "select",
+          "label": "TRANSLATE.TEXTSCROLLLABEL",
+          "doc": "TRANSLATE.TEXTSCROLLDOC",
+          "value": {"value": 1 ,"label": "Scroll"},
+          "options": [
+           {
+             "value": 1,
+             "label": "Scroll"
+           },
+           {
+             "value": 2,
+             "label": "Truncate"
+           },
+          ]
+        }
+
 	{
           "id":"welcome_message_bool",
           "element": "switch",

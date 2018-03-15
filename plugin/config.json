@@ -34,5 +34,9 @@
     "config_lcd_address": {
     "type": "string",
     "value": "0x3F"
+  },
+    "text_scroll": {
+    "type": "select",
+    "value": "1"
   }
 }

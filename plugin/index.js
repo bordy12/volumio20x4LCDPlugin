@@ -32,7 +32,7 @@ lcdcontroller.prototype.onVolumioStart = function()
 	var configFile=this.commandRouter.pluginManager.getConfigurationFile(this.context,'config.json');
 	this.config = new (require('v-conf'))();
 	this.config.loadFile(configFile);
-	
+
     return libQ.resolve();
 }
 
@@ -47,8 +47,8 @@ lcdcontroller.prototype.onStart = function() {
     // Wait some time for '/usr/bin/killall' to complete
     var waitTimestamp = new Date(new Date().getTime() + 2000);
     while(waitTimestamp > new Date()){};
-    // scrollText.py ignores every arguments given, so 'super_secret_hidden_NSA_exploit' will be ignored everytime
-    spawn('/data/plugins/user_interface/lcdcontroller/LCDcontroller/scrollText.py', ['super_secret_hidden_NSA_exploit'], {
+    // main.py ignores every arguments thrown at it, so might as well send it a super secret exploit
+    spawn('/data/plugins/user_interface/lcdcontroller/LCDcontroller/main.py', ['super_secret_hidden_NSA_exploit'], {
     	detached: true
     });
 
@@ -85,8 +85,8 @@ function restartLCD() {
     // Wait some time for '/usr/bin/killall' to complete
     var waitTimestamp = new Date(new Date().getTime() + 450);
     while(waitTimestamp > new Date()){};
-    // scrollText.py ignores every arguments given, so 'super_secret_hidden_NSA_exploit' will be ignored everytime
-    spawn('/data/plugins/user_interface/lcdcontroller/LCDcontroller/scrollText.py', ['super_secret_hidden_NSA_exploit'], {
+    // main.py ignores every arguments given, so 'super_secret_hidden_NSA_exploit' will be ignored everytime
+    spawn('/data/plugins/user_interface/lcdcontroller/LCDcontroller/main.py', ['super_secret_hidden_NSA_exploit'], {
     	detached: true
     });
 }
@@ -148,7 +148,7 @@ lcdcontroller.prototype.saveUIConfig = function(data) {
    var self = this;
    // For every setting, save it's value to config.json
    // Example: self.config.set('<setting_name>', data['<UIconfig_value>']);   // Where <setting_name> is stored in config.json and <UIconfig_value> retreived from the UIconfig.
-   
+
    // Save text_split_string's value in config_text_split_string in config.json
    self.config.set('config_text_split_string', data['text_split_string']);
    // Save welcome_message_bool's value in config_welcome_message_bool in config.json
@@ -172,7 +172,7 @@ lcdcontroller.prototype.saveUIConfig = function(data) {
    var waitTimestamp = new Date(new Date().getTime() + 4000);
    while(waitTimestamp > new Date()){};
    restartLCD();
-   
+
    // Tell Volumio everything went fine
    return defer.promise;
 };

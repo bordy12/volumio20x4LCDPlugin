@@ -27,5 +27,8 @@
   "HOSTDOC":"Deze plugin gebruikt MPD (pakket python-mpd) om informatie op te vragen van Volumio. Volumio heeft een mooie manier om gemakkelijk informatie over afspelende nummers te delen met andere Volumio-apparaten. Indien Volumio's manier niet werkt, kan bij deze instelling het IP-adres van een ander Volumio-apparaat worden ingevuld, om daar rechtstreeks informatie van op te vragen. Het is aan te raden om het externe Volumio-apparaat alvorens een statisch IP-adres te geven.",
 
   "LCDADDRESSLABEL":"I2C LCD Adres",
-  "LCDADDRESSDOC":"Sommige LCD-schermen hebben een ander adres nodig om via I2C te kunnen communiceren. Via deze instelling kan het LCD-adres gewijzigd worden."
+  "LCDADDRESSDOC":"Sommige LCD-schermen hebben een ander adres nodig om via I2C te kunnen communiceren. Via deze instelling kan dit adres gewijzigd worden. Vaak is het juiste I2C-adres 0x3F of 0x27.",
+
+  "TEXTSCROLLLABEL":"Lange tekst",
+  "TEXTSCROLLDOC":"Deze instelling laat de plugin weten hoe deze om moet gaan met tekst die te lang is en dus niet op de LCD past."
 }

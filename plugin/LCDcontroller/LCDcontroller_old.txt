@@ -1,0 +1,175 @@
+# Send info to the LCD
+try:
+	restartLineOne = time()-1
+	restartLineTwo = time()-1
+	restartLineThree = time()-1
+	restartLineFour = time()-1
+
+	posLineOne=0
+	posLineTwo=0
+	posLineThree=0
+	posLineFour=0
+
+	textLineOne =   textOne + text_split_string_setting + textOne[0:20]
+	textLineTwo =   textTwo + text_split_string_setting + textTwo[0:20]
+	textLineThree = textThree + text_split_string_setting + textThree[0:20]
+	textLineFour =  textFour + text_split_string_setting + textFour[0:20]
+
+	writeLineOne = False
+	writeLineTwo = False
+	writeLineThree = False
+	writeLineFour = False
+
+	lineOneChanged = True
+	lineTwoChanged = True
+	lineThreeChanged = True
+	lineFourChanged = True
+
+	lastPrintedTextLineOne = 0
+	lastPrintedTextLineTwo = 0
+	lastPrintedTextLineThree = 0
+	lastPrintedTextLineFour = 0
+
+	toPrintTextLineOne = 0
+	toPrintTextLineTwo = 0
+	toPrintTextLineThree = 0
+	toPrintTextLineFour = 0
+
+	while(True):
+		if(time()-infoRefreshTimeStamp >= infoRefreshTimeWait):
+			# It's time to update the information about the songs and such
+			songInfo = updateLCDinfo()
+			textOne = songInfo[0]
+			textTwo = songInfo[1]
+			textThree = songInfo[2]
+			textFour = songInfo[3]
+
+			newTextLineOne =   textOne + text_split_string_setting + textOne[0:20]
+			newTextLineTwo =   textTwo + text_split_string_setting + textTwo[0:20]
+			newTextLineThree = textThree + text_split_string_setting + textThree[0:20]
+			newTextLineFour =  textFour + text_split_string_setting + textFour[0:20]
+			#Now check for any changes
+			if(textLineOne != newTextLineOne):
+				# Update the text, because there is new text
+				textLineOne = newTextLineOne
+				# Now reset some int's and bool's to make the text start scolling from the beginning
+				posLineOne = 0
+				lineOneChanged = True
+				writeLineOne = True
+				newTextLineOne = True
+			if(textLineTwo != newTextLineTwo):
+				# Update the text, because there is new text
+				textLineTwo = newTextLineTwo
+				# Now reset some int's and bool's to make the text start scolling from the beginning
+				posLineTwo = 0
+				lineTwoChanged = True
+				writeLineTwo = True
+				newTextLineTwo = True
+			if(textLineThree != newTextLineThree):
+				# Update the text, because there is new text
+				textLineThree = newTextLineThree
+				# Now reset some int's and bool's to make the text start scolling from the beginning
+				posLineThree = 0
+				lineThreeChanged = True
+				writeLineThree = True
+				newTextLineThree = True
+			if(textLineFour != newTextLineFour):
+				# Update the text, because there is new text
+				textLineFour = newTextLineFour
+				# Now reset some int's and bool's to make the text start scolling from the beginning
+				posLineFour = 0
+				lineFourChanged = True
+				writeLineFour = True
+				newTextLineFour = True
+			# Set a new time to check for changes in text
+			infoRefreshTimeStamp = time()
+
+		if(time()-timeWaitTimeStamp >= timeWait):
+			# Line one code starts here
+			if(len(textOne) > 20):
+				if(time()-restartLineOne > lineTimeWait):
+					writeLineOne = True
+					toPrintTextLineOne = textLineOne[posLineOne:posLineOne+20]
+					lastPrintedTextLineOne = textLineOne[posLineOne:posLineOne+20]
+					posLineOne = posLineOne + moveText
+					lineOneChanged = True
+					if(posLineOne >= len(textLineOne)-18):
+						posLineOne = 1
+						restartLineOne = time()
+						lineOneChanged = False
+					timeStampLineOne = time()
+			else:
+				toPrintTextLineOne = textOne
+				writeLineOne = True
+
+			# Line two code starts here
+			if(len(textTwo) > 20):
+				if(time()-restartLineTwo > lineTimeWait):
+					writeLineTwo = True
+					toPrintTextLineTwo = textLineTwo[posLineTwo:posLineTwo+20]
+					lastPrintedTextLineTwo = textLineTwo[posLineTwo:posLineTwo+20]
+					posLineTwo = posLineTwo + moveText
+					lineTwoChanged = True
+					if(posLineTwo >= len(textLineTwo)-18):
+						posLineTwo = 1
+						restartLineTwo = time()
+						lineTwoChanged = False
+					timeStampLineTwo = time()
+			else:
+				toPrintTextLineTwo = textTwo
+				writeLineTwo = True
+
+			# Line three code starts here
+			if(len(textThree) > 20):
+				if(time()-restartLineThree > lineTimeWait):
+					writeLineThree = True
+					toPrintTextLineThree = textLineThree[posLineThree:posLineThree+20]
+					lastPrintedTextLineThree = textLineThree[posLineThree:posLineThree+20]
+					posLineThree = posLineThree + moveText
+					lineThreeChanged = True
+					if(posLineThree >= len(textLineThree)-18):
+						posLineThree = 1
+						restartLineThree = time()
+						lineThreeChanged = False
+					timeStampLineThree = time()
+			else:
+				toPrintTextLineThree = textThree
+				writeLineThree = True
+
+			# Line four code starts here
+			if(len(textFour) > 20):
+				if(time()-restartLineFour > lineTimeWait):
+					writeLineFour = True
+					toPrintTextLineFour = textLineFour[posLineFour:posLineFour+20]
+					lastPrintedTextLineFour = textLineFour[posLineFour:posLineFour+20]
+					posLineFour = posLineFour + moveText
+					lineFourChanged = True
+					if(posLineFour >= len(textLineFour)-18):
+						posLineFour = 1
+						restartLineFour = time()
+						lineFourChanged = False
+					timeStampLineFour = time()
+			else:
+				toPrintTextLineFour = textFour
+				writeLineFour = True
+
+			# Check what stuff to send to the LCD and what to leave out because it's already being displayed
+			if(lineOneChanged == True and writeLineOne == True):
+				sendToLCD(0, toPrintTextLineOne)
+				writeLineOne = False
+				lineOneChanged = False
+			if(lineTwoChanged == True and writeLineTwo == True):
+				sendToLCD(1, toPrintTextLineTwo)
+				writeLineTwo = False
+				lineTwoChanged = False
+			if(lineThreeChanged == True and writeLineThree == True):
+				sendToLCD(2, toPrintTextLineThree)
+				writeLineThree = False
+				lineThreeChanged = False
+			if(lineFourChanged == True and writeLineFour == True):
+				sendToLCD(3, toPrintTextLineFour)
+				writeLineFour = False
+				lineFourChanged = False
+			timeWaitTimeStamp = time()
+except KeyboardInterrupt:
+	print("\nExiting...")

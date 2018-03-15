@@ -1,13 +1,16 @@
 import i2c_lib
 from time import sleep
-import settings
+import functions
 import os
 
-lcd_settings = settings.getSettings() # Ask settings.py for the settings
-lcd_address_setting = lcd_settings['config_lcd_address']['value'] # This seting tells Python what address to use to communicate with the I2C-LCD
+# Retreive the I2C-address setting
+settings = functions.Settings()
+plugin_settings = settings.retreive()
+plugin_settings = settings.validate(plugin_settings)
+config_lcd_address = plugin_settings['config_lcd_address']['value']
 
 # Save the ADDRESS-setting to lcd_setting.py, which we can then import to get a hex-int-type
-os.system('echo "ADDRESS = ' + lcd_address_setting + '" > /data/plugins/user_interface/lcdcontroller/LCDcontroller/lcd_setting.py')
+os.system('echo "ADDRESS = ' + config_lcd_address + '" > /data/plugins/user_interface/lcdcontroller/LCDcontroller/lcd_setting.py')
 
 # LCD Address, get this from the lcd_address.py file that just got created
 from lcd_address import *
@@ -59,7 +62,7 @@ Rw = 0b00000010 # Read/Write bit
 Rs = 0b00000001 # Register select bit
 
 class lcd:
-  """ 
+  """
   Class to control the 16x2 I2C LCD display from sainsmart from the Raspberry Pi
   """
 
@@ -105,7 +108,7 @@ class lcd:
     if line == 3:
       self.write(0xC0)
     if line == 4:
-      self.write(0xD4) 
+      self.write(0xD4)
     for char in centered_string:
       self.write(ord(char), Rs)
 
