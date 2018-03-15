@@ -101,7 +101,6 @@ try:
                 while(True):
                     # Check for updates on the information we have
                     if(music_info.check_for_updates() !=  False):
-			print('New music-info found: reloading LCD')
 			sleep(0.5)
                         # Looks like there is an update to the info we have, update everything and reset scroll-counters
                         info = music_info.retreive()
@@ -125,8 +124,8 @@ try:
                         # This creates a small problem: <song name>-<song artist> is a one-liner. This text needs to be split into 2 lines
                         # This for-loop starts at 1 and ends at title-1, because i want to ignore any '-' at the beginning and end of the 'title'
 			title = music_info.split_text(title)
-			if(status != 'stop'):
-			    # Display information about current music
+			if(status == 'play'):
+			    # Display information about current webradio music
 		            if(type(title) == list and len(title) == 2):
 				LCD_line_one = str(title[0])
 				LCD_line_two = str(title[1])
@@ -138,11 +137,9 @@ try:
 			else:
 			    LCD_line_one = ' '
 			    LCD_line_two = ' '
-			    LCD_line_three = ' '
-			
 
 
-                    elif(str(trackType) != 'webradio' and info_configured == False):
+                    elif(str(trackType) != 'webradio' and info_configured == False and status != 'stop'):
                         # Just make sure the info we send to the LCD is not null
                         if(len(LCD_line_one) != 0):
                             LCD_line_one = title
@@ -156,7 +153,18 @@ try:
                             LCD_line_three = album
                         else:
                             LCD_line_three = ' '
+			if(status == 'pause'):
+			    LCD_line_four = '||'
+			else:
+			    LCD_line_four = ' '
                         info_configured = True
+
+		    elif(status == 'stop'):
+			LCD_line_one = ' '
+			LCD_line_two = ' '
+			LCD_line_three = ' '
+			LCD_line_four = ' '
+			info_configured = True
 
 		    # Fix types
                     LCD_line_one = str(LCD_line_one)
@@ -236,6 +244,30 @@ try:
                             if(LCD_line_three_text_sent != LCD_line_three):
                                 sendToLCD(2, LCD_line_three)
                                 LCD_line_three_text_sent = LCD_line_three
+		    if(len(LCD_line_three) > 20):
+                        if text_split_string_setting not in LCD_line_three:
+                            #Add text-separator to text
+                            LCD_line_three = LCD_line_three + str(text_split_string_setting)
+
+                        # Scroll the first part of the text
+                        if(LCD_line_four_scroll_counter<len(LCD_line_four)):
+                            sendToLCD(3, LCD_line_four[LCD_line_four_scroll_counter-20:LCD_line_four_scroll_counter])
+                            LCD_line_four_scroll_counter+=1
+                        # Make sure the text reaches the beginning again
+                        else:
+                            # If text reached the beginning again, set the counter to initial value 20, NOT 0 (zero)
+                            if(len(LCD_line_four[LCD_line_four_scroll_counter-20:]) <= 0):
+                                LCD_line_four_scroll_counter = 20
+                            # if the text reaches the end, do some magic to make te look like it scrolls through
+                            else:
+                                sendToLCD(3, LCD_line_four[LCD_line_four_scroll_counter-20:] + LCD_line_four[0:LCD_line_four_scroll_counter-len(LCD_line_four)])
+                                LCD_line_four_scroll_counter+=1
+                    else:
+                            # Do not resend any previously sent text
+                            if(LCD_line_four_text_sent != LCD_line_four):
+                                sendToLCD(3, LCD_line_four)
+                                LCD_line_four_text_sent = LCD_line_four
+
 		    sleep(1.2)
             elif(str(text_scroll) == "2"):
                 # Value is 2, truncate the text

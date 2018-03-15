@@ -34,6 +34,7 @@ class MusicInfo():
         new_info = os.popen('/volumio/app/plugins/system_controller/volumio_command_line_client/volumio.sh status').read()
         # Convert the info to a dictionary
         new_info = json.loads(new_info)
+	print('\n\n' + str(new_info))
 	# Check if key variables are not None/undefined
         if 'title' not in new_info:
             new_info['title'] = ' '
@@ -65,6 +66,10 @@ class MusicInfo():
             self.info = new_info
 	    return True
         elif(new_info['trackType'] != current_info['trackType']):
+            # The info has changed, return the new info
+            self.info = new_info
+            return True
+	elif(new_info['status'] != current_info['status']):
             # The info has changed, return the new info
             self.info = new_info
             return True
