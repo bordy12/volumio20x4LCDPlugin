@@ -24,13 +24,6 @@ It seems that Volumio does not do file-upload anymore, as told here:
 https://volumio.org/forum/way-upload-unofficial-plugin-t9155.html.
 I will look for a fitting solution to this.
 
-### How to bundle the plugin myself?
-- Download all the files from this GitHub-page
-- In your file-manager, go into the "plugin"-folder (this folder contains the source code)
-- Select all the files in this folder and put them in a zip-file (the name of the zip-file does not matter)
-- If another version of this plugin is already installed on Volumio, remove it.
-- Upload the <pluginname>.zip you just created to Volumio
-
 ## How to uninstall the plugin
 The plugin can be uninstalled as any other Volumio plugin:
 - Go to the installed plugins and click "Uninstall"
