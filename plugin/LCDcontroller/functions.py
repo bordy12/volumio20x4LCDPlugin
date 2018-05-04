@@ -33,9 +33,7 @@ class MusicInfo():
         # execute the volumio.sh command and read it's output
         new_info = os.popen('/volumio/app/plugins/system_controller/volumio_command_line_client/volumio.sh status').read()
         # Convert the info to a dictionary
-        print(new_info);
         new_info = json.loads(new_info)
-	print('\n\n' + str(new_info))
 	# Check if key variables are not None/undefined
         if 'title' not in new_info:
             new_info['title'] = ' '

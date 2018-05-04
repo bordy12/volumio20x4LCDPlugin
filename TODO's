@@ -1,3 +1,1 @@
- - Fix Title-Artist.mp3 splitting if no artist found in info
- - Test Youtube and Spotify
  - Create auto-installer which pulls everything from git and installs the plugin (including the warning that this plugin is UNOFFICIAL!)

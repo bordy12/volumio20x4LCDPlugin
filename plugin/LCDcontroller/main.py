@@ -123,14 +123,6 @@ try:
 				 	trackType = str(info['trackType'])
 				 	status = str(info['status'])
 
-				 	##DEBUG
-				 	print(title)
-				 	print(artist)
-				 	print(album)
-				 	print(trackType)
-				 	print(status)
-
-
 					if(str(trackType) == 'webradio' and info_configured == False and status != 'stop'):
 						# Webradio's always display their song-info in the title-value and their radio station in the artist-value,
 						# This creates a small problem: <song name>-<song artist> is a one-liner. This text needs to be split into 2 lines
@@ -176,7 +168,7 @@ try:
 									int(title[0])
 									title = title[1::]
 							except:
-								print("Done removing chars and such")
+								print("\n")
 							
 							title = music_info.split_text(title)
 							if(len(str(title[1])) > 0):
@@ -203,10 +195,6 @@ try:
 				LCD_line_two = str(LCD_line_two)
 				LCD_line_three = str(LCD_line_three)
 				LCD_line_four = str(LCD_line_four)
-
-				#DEBUG: PRINT EVERYTINHG
-				print("1. " + LCD_line_one + "\n2. " + LCD_line_two + "\n3. " + LCD_line_three + "\n4. " + LCD_line_four)
-
 
 					# The following lines of code handle the output to the first line of the LCD
 				if(len(LCD_line_one) > 20):
@@ -303,7 +291,6 @@ try:
 							LCD_line_four_text_sent = LCD_line_four
 				sleep(1.2)
 		elif(str(text_scroll) == "2"):
-			print("DEBUG: READ TRUNCATE FROM OPTIONS")
 			# Value is 2, truncate the text
 			while(True):
 				# Check for updates on the information we have
@@ -324,14 +311,6 @@ try:
 				 	album = str(info['album'])
 				 	trackType = str(info['trackType'])
 				 	status = str(info['status'])
-
-				 	##DEBUG
-				 	print(title)
-				 	print(artist)
-				 	print(album)
-				 	print(trackType)
-				 	print(status)
-
 
 					if(str(trackType) == 'webradio' and info_configured == False and status != 'stop'):
 						# Webradio's always display their song-info in the title-value and their radio station in the artist-value,
@@ -378,7 +357,7 @@ try:
 									int(title[0])
 									title = title[1::]
 							except:
-								print("Done removing chars and such")
+								print("\n")
 							
 							title = music_info.split_text(title)
 							if(len(str(title[1])) > 0):
