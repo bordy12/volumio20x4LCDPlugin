@@ -3,24 +3,25 @@
     "label": "TRANSLATE.PLUGIN_CONFIGURATION"
   },
   "sections": [
-   {
+    {
       "id": "lcdcontroller_settings",
       "element": "section",
       "label": "TRANSLATE.TITLE",
       "icon": "fa-plug",
       "onSave": {"type":"controller", "endpoint":"user_interface/lcdcontroller", "method":"saveUIConfig"},
       "saveButton": {
-        "label": "TRANSLATE.SAVE",
-        "data": [
-          "text_split_string",
-          "welcome_message_bool",
-          "welcome_message_duration",
-	  "welcome_message_string_one",
-	  "welcome_message_string_two",
-	  "welcome_message_string_three",
-	  "welcome_message_string_four",
-	  "host",
-	  "lcd_address"
+      "label": "TRANSLATE.SAVE",
+      "data": [
+        "text_split_string",
+        "text_scroll",
+        "welcome_message_bool",
+        "welcome_message_duration",
+        "welcome_message_string_one",
+        "welcome_message_string_two",
+        "welcome_message_string_three",
+        "welcome_message_string_four",
+        "host",
+        "lcd_address"
         ]
       },
       "content": [
@@ -33,37 +34,36 @@
           "value": "|"
         },
         {
-          "id": "text_scroll",
-          "element": "select",
-          "label": "TRANSLATE.TEXTSCROLLLABEL",
-          "doc": "TRANSLATE.TEXTSCROLLDOC",
-          "value": {"value": 1 ,"label": "Scroll"},
-          "options": [
-           {
-             "value": 1,
-             "label": "Scroll"
-           },
-           {
-             "value": 2,
-             "label": "Truncate"
-           },
+        "id": "text_scroll",
+        "element": "select",
+        "label": "TRANSLATE.TEXTSCROLLLABEL",
+        "doc": "TRANSLATE.TEXTSCROLLDOC",
+        "value": {"value": 1 ,"label": "Scroll"},
+        "options": [
+            {
+              "value": 1,
+              "label": "Scroll"
+            },
+            {
+              "value": 2,
+              "label": "Truncate"
+            }
           ]
-        }
-
-	{
+        },
+        {
           "id":"welcome_message_bool",
           "element": "switch",
           "doc": "TRANSLATE.WELCOMEMESSAGEBOOLDOC",
           "label": "TRANSLATE.WELCOMEMESSAGEBOOLLABEL",
           "value": false
         },
-	{
+        {
           "id": "welcome_message_duration",
           "type":"text",
           "element": "input",
           "doc": "TRANSLATE.WELCOMEMESSAGEDURATIONDOC",
           "label": "TRANSLATE.WELCOMEMESSAGEDURATIONLABEL",
-	  "visibleIf": {"field": "welcome_message_bool", "value": true},
+          "visibleIf": {"field": "welcome_message_bool", "value": true},
           "value": "2"
         },
         {
@@ -72,45 +72,37 @@
           "element": "input",
           "doc": "TRANSLATE.WELCOMEMESSAGEDOC1",
           "label": "TRANSLATE.WELCOMEMESSAGELABEL1",
-	  "visibleIf": {"field": "welcome_message_bool", "value": true},
+          "visibleIf": {"field": "welcome_message_bool", "value": true},
           "value": ""
         },
-	{
+        {
           "id": "welcome_message_string_two",
           "type":"text",
           "element": "input",
           "doc": "TRANSLATE.WELCOMEMESSAGEDOC2",
           "label": "TRANSLATE.WELCOMEMESSAGELABEL2",
-	  "visibleIf": {"field": "welcome_message_bool", "value": true},
+          "visibleIf": {"field": "welcome_message_bool", "value": true},
           "value": ""
         },
-	{
+        {
           "id": "welcome_message_string_three",
           "type":"text",
           "element": "input",
           "doc": "TRANSLATE.WELCOMEMESSAGEDOC3",
           "label": "TRANSLATE.WELCOMEMESSAGELABEL3",
-	  "visibleIf": {"field": "welcome_message_bool", "value": true},
+          "visibleIf": {"field": "welcome_message_bool", "value": true},
           "value": ""
         },
-	{
+        {
           "id": "welcome_message_string_four",
           "type":"text",
           "element": "input",
           "doc": "TRANSLATE.WELCOMEMESSAGEDOC4",
           "label": "TRANSLATE.WELCOMEMESSAGELABEL4",
-	  "visibleIf": {"field": "welcome_message_bool", "value": true},
+          "visibleIf": {"field": "welcome_message_bool", "value": true},
           "value": ""
         },
-	{
-          "id": "host",
-          "type":"text",
-          "element": "input",
-          "doc": "TRANSLATE.HOSTDOC",
-          "label": "TRANSLATE.HOSTLABEL",
-          "value": "localhost"
-        },
-	{
+        {
           "id": "lcd_address",
           "type":"text",
           "element": "input",
@@ -119,6 +111,6 @@
           "value": "0x3F"
         }
       ]
-   }
+    }
   ]
 }

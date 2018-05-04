@@ -47,9 +47,9 @@ lcdcontroller.prototype.onStart = function() {
     // Wait some time for '/usr/bin/killall' to complete
     var waitTimestamp = new Date(new Date().getTime() + 2000);
     while(waitTimestamp > new Date()){};
-    // main.py ignores every arguments thrown at it, so might as well send it a super secret exploit
-    spawn('/data/plugins/user_interface/lcdcontroller/LCDcontroller/main.py', ['super_secret_hidden_NSA_exploit'], {
-    	detached: true
+ 
+    spawn('/usr/bin/python', ['/data/plugins/user_interface/lcdcontroller/LCDcontroller/main.py'], {
+      detached: true
     });
 
     //  Once the Plugin has successfull started resolve the promise
@@ -80,13 +80,13 @@ lcdcontroller.prototype.onRestart = function() {
 
 function restartLCD() {
     spawn('/usr/bin/killall', ['python'], {
-    		detached: true
+    	detached: true
     });
     // Wait some time for '/usr/bin/killall' to complete
     var waitTimestamp = new Date(new Date().getTime() + 450);
     while(waitTimestamp > new Date()){};
-    // main.py ignores every arguments given, so 'super_secret_hidden_NSA_exploit' will be ignored everytime
-    spawn('/data/plugins/user_interface/lcdcontroller/LCDcontroller/main.py', ['super_secret_hidden_NSA_exploit'], {
+
+    spawn('/usr/bin/python', ['/data/plugins/user_interface/lcdcontroller/LCDcontroller/main.py'], {
     	detached: true
     });
 }
@@ -113,20 +113,20 @@ lcdcontroller.prototype.getUIConfig = function() {
 
 			// Load config_text_split_string into UIconfig
 			uiconf.sections[0].content[0].value = self.config.get('config_text_split_string');
+      // Load text_scroll into UIconfig
+      uiconf.sections[0].content[1].value = self.config.get('config_text_scroll');
 			// Load config_welcome_message_bool into UIconfig
-			uiconf.sections[0].content[1].value = self.config.get('config_welcome_message_bool');
-			// Load config_welcome_message_duration into UIconfig
-			uiconf.sections[0].content[2].value = self.config.get('config_welcome_message_duration');
-			// Load config_welcome_message_string_one into UIconfig
-			uiconf.sections[0].content[3].value = self.config.get('config_welcome_message_string_one');
-			// Load config_welcome_message_string_two into UIconfig
-			uiconf.sections[0].content[4].value = self.config.get('config_welcome_message_string_two');
+			uiconf.sections[0].content[2].value = self.config.get('config_welcome_message_bool');
+			// // Load config_welcome_message_duration into UIconfig
+			uiconf.sections[0].content[3].value = self.config.get('config_welcome_message_duration');
+			// // Load config_welcome_message_string_one into UIconfig
+			uiconf.sections[0].content[4].value = self.config.get('config_welcome_message_string_one');
+			// // Load config_welcome_message_string_two into UIconfig
+			uiconf.sections[0].content[5].value = self.config.get('config_welcome_message_string_two');
 			// Load config_welcome_message_string_three into UIconfig
-			uiconf.sections[0].content[5].value = self.config.get('config_welcome_message_string_three');
+			uiconf.sections[0].content[6].value = self.config.get('config_welcome_message_string_three');
 			// Load config_welcome_message_string_four into UIconfig
-			uiconf.sections[0].content[6].value = self.config.get('config_welcome_message_string_four');
-			// Load config_host into UIconfig
-			uiconf.sections[0].content[7].value = self.config.get('config_host');
+			uiconf.sections[0].content[7].value = self.config.get('config_welcome_message_string_four');
 			// Load config_lcd_address into UIconfig
 			uiconf.sections[0].content[8].value = self.config.get('config_lcd_address');
 			// Tell Volumio everything went very well
@@ -151,6 +151,8 @@ lcdcontroller.prototype.saveUIConfig = function(data) {
 
    // Save text_split_string's value in config_text_split_string in config.json
    self.config.set('config_text_split_string', data['text_split_string']);
+   // Save text_scroll's value into config.json
+   self.config.set('config_text_scroll', data['text_scroll']);
    // Save welcome_message_bool's value in config_welcome_message_bool in config.json
    self.config.set('config_welcome_message_bool', data['welcome_message_bool']);
    // Save welcome_message_duration's value in config_welcome_message_duration in config.json
@@ -163,8 +165,6 @@ lcdcontroller.prototype.saveUIConfig = function(data) {
    self.config.set('config_welcome_message_string_three', data['welcome_message_string_three']);
    // Save welcome_message_string_four's value in config_welcome_message_string_four in config.json
    self.config.set('config_welcome_message_string_four', data['welcome_message_string_four']);
-   // Save host's value in config_host in config.json
-   self.config.set('config_host', data['host']);
    // Save lcd_address's value in config_lcd_address in config.json
    self.config.set('config_lcd_address', data['lcd_address']);
 

@@ -33,6 +33,7 @@ class MusicInfo():
         # execute the volumio.sh command and read it's output
         new_info = os.popen('/volumio/app/plugins/system_controller/volumio_command_line_client/volumio.sh status').read()
         # Convert the info to a dictionary
+        print(new_info);
         new_info = json.loads(new_info)
 	print('\n\n' + str(new_info))
 	# Check if key variables are not None/undefined
@@ -164,24 +165,6 @@ class Settings():
                 print("config_welcome_message_string_four is too long, it has been cut off")
                 settings['config_welcome_message_string_four']['value'] = settings['config_welcome_message_string_four']['value'][0:20]
 
-            # Test if the user has enetered a valid IP-addres, either IPv4, IPv6 or the word localhost
-            ip = settings['config_host']['value']
-            if(len(ip) <= 0):
-                settings['config_host']['value'] = 'localhost'
-            elif(ip != 'localhost'):
-                try:
-                    # test for IPv4
-                    socket.inet_pton(socket.AF_INET, ip)
-                    print("MPD-host setting is recognized as IPv4")
-                except socket.error:
-                    try:
-                        # test for IPv6
-                        socket.inet_pton(socket.AF_INET6, ip)
-                        print("MPD-host setting is recognized as IPv6")
-                    except socket.error:
-                        print("mpd_host_setting NOT ok: not 'localhost' or IPv4 or IPv6" + str(ip) + "\nDefaulting to localhost...");
-                        settings['config_host']['value'] = 'localhost'
-
             # Perform some checks to see if the settings are in the right format/type and are not empty
             if(len(settings['config_text_split_string']['value']) <= 0):
                 print("config_text_split_string was left empty: Replacing the empty setting with two spaces")
@@ -190,7 +173,7 @@ class Settings():
                 if(settings['config_text_split_string']['value'][-1:] != ' ' and settings['config_text_split_string']['value'][0] != ' '):
                     # Add two spaces to this setting, as it looks better
                     settings['config_text_split_string']['value'] = ' ' + str(settings['config_text_split_string']['value']) + ' '
-            if(len(settings['config_welcome_message_duration']['value']) <= 0):
+            if(settings['config_welcome_message_duration']['value'] <= 0):
                 settings['config_welcome_message_duration' ]= ' '
             if(len(str(settings['config_welcome_message_duration']['value'])) < 1):
                 # I don't know what the user want when they leave the input field for welcome_message_duration empty or enter non-int chars, so I'll just turn the feature off
