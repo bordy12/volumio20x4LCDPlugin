@@ -3,7 +3,7 @@
 Welcome to the project page for a plugin I created for Volumio2 for the Raspberry Pi, actually I'm running it on a Pi 2.
 This project belongs to the one created by Tom Niesse, I rewrote the main python procedure, it now uses a slightly different I2C driver I need to manage my custom characters set.
 It can retreive information about songs and webradio's and print them on an LCD-screen with I2C (4x20).
-Addionatly it can show weather forecast infos, in this case you need to edit the python script to work with yuor favourite weather forecast service.
+Addionatly it can show weather forecast infos, in this case you need to edit the python script to work with your favourite weather forecast service.
 
 I fitted the Pi2 and the LCD into an FM radio case i have found somewhere in my house, this is the result:
 <img width="380px" src='https://user-images.githubusercontent.com/20586835/85121964-16d85880-b226-11ea-9532-93dd40dd7e59.jpg' alt='MyRadio_01'><br>
@@ -22,21 +22,24 @@ The plugin can display information about music files and webradio's when they ar
   - Separating 'title - artist-name - album-name' into<br>title<br>artist-name<br>album-name<br>for webradios and music files
   - Displaying a welcome-message at startup
   - Displaying volume % when it changes
-  - Displaying weather forecast (edit the main.py to meets your needs first!)
+  - Displaying weather forecast infos from XML weather service https://www.arpa.veneto.it/
 
 The plugin can auto-update information when it changes, for exmaple, switching from webradio to a music file, pausing music files, etc.
+Weather forecast XML file has to be downloaded in the home dir with an external script and optionally scheduled with cron.
 
 ## How to install the plugin
 
-It seems that Volumio does not do file-upload anymore, as told here:
-https://volumio.org/forum/way-upload-unofficial-plugin-t9155.html.
-I will look for a fitting solution to this.
+Clone and extract the archive onto a new directory of your Pi's home (eg. /home/volumio/lcdcontroller)
+Then type: 
+cd /home/volumio/lcdcontroller
+volumio plugin install
 
 ## How to uninstall the plugin
+
 The plugin can be uninstalled as any other Volumio plugin:
 - Go to the installed plugins and click "Uninstall"
 
-After uninstalling, the LCD might still show some text and it will look like it froze.<br>I will fix this in the future.
+After uninstalling, the LCD might still show some text and it will look like it froze.
 
 ## Change plugin settings
 
@@ -44,4 +47,4 @@ The settings can be changed in the plugin's settings page. In Volumio: Go to the
 
 ## Turning the plugin on and off
 
-This can also be done via the plugin-menu. After turning the plugin off, some text can still be displayed on the LCD-screen. I will fix this in the future
+This can also be done via the plugin-menu. After turning the plugin off, some text can still be displayed on the LCD-screen.
