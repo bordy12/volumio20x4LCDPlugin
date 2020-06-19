@@ -109,6 +109,52 @@ class MusicInfo():
     	else:
     	    return title
 
+class OtherInfo():
+	# Constructor
+	def __init__(self):
+		self.info = {}
+		self.info['volume'] = ' '
+
+	# Use volumio.sh to check for any updates to Music-info
+	def check_for_updates(self):
+		current_info = self.info
+		# Check if key variables are not None/undefined
+		if 'volume' not in self.info:
+			self.info['volume'] = ' '
+		# retreive new info
+		# execute the volumio.sh command and read it's output
+		new_info = os.popen('/volumio/app/plugins/system_controller/volumio_command_line_client/volumio.sh status').read()
+		# Convert the info to a dictionary
+		new_info = json.loads(new_info)
+		# Check if key variables are not None/undefined
+		if 'volume' not in new_info:
+			new_info['volume'] = ' '
+		# Check if the title has changed
+		if(new_info['volume'] != current_info['volume']):
+			if new_info['volume'] is None:
+				new_info['volume'] = ' '
+			self.info = new_info
+			return True
+		else:
+			# Nothing important changed, return False
+			return False
+
+	def retreive(self):
+		if(self.info == ' '):
+			# execute the volumio.sh command and read it's output
+			self.info = os.popen('/volumio/app/plugins/system_controller/volumio_command_line_client/volumio.sh status').read()
+			# Convert the info to a dictionary
+			self.info = json.loads(self.info)
+		# Check for empty values before returning them, to prevent errors
+		if 'volume' not in self.info:
+			self.info['volume'] = ' '
+			# return the info
+			return self.info
+		else:
+			# return the info
+			if 'volume' not in self.info:
+				self.info['volume'] = ' '
+			return self.info
 
 class Settings():
     # constructor
@@ -118,6 +164,12 @@ class Settings():
 
     # Retreive the right config.json and convert it into a python dictionary
     def retreive(self):
+        #if(os.path.isfile('/home/volumio/lcdcontroller/config.json')):
+        #        settings_file = open('/home/volumio/lcdcontroller/config.json')
+        #        settings_file_content = settings_file.read()
+        #        settings_dictionary = json.loads(settings_file_content)
+        #        return settings_dictionary
+        ##elifif(os.path.isfile('/data/configuration/user_interface/lcdcontroller/config.json')):
         if(os.path.isfile('/data/configuration/user_interface/lcdcontroller/config.json')):
                 # There is a config.json created by the UIconfig settings-page. Use that one!
                 # Read config.json

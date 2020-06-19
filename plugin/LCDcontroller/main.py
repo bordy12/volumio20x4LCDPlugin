@@ -1,49 +1,138 @@
 #! /usr/bin/env python
 
+#Import libraries to manage xml wh forecast
+import urllib2
+import xml.etree.ElementTree as ET
+
 # Import settings.py (settings.py is stored in the same folder as this file and contains a function that converts the config.json into a python dictionary)
 import functions
 # Import other useful modules
-from os import *
+#from os import *
+import os
 from time import *
 from sys import *
 from math import *
+from datetime import datetime
 
 #import LCD-related python libs
-from lcd_display import lcd
-#make sure python knows what an LCD is
-my_lcd = lcd()
+from I2C_LCD_driver import lcd
 
 #make lcd-positions work properly
 lcd_position=[1,3,2,4]
 
+#define lcd length
+lcd_lenght = 20
+
 # define some options
-moveText = 1 # How many characters to move each time. This should remain 1. Also, this should never have a float-value.
-infoRefreshTimeWait = 0.4 # How often should the script check for new song-/radio-info (value is in seconds)?
-timeWaitTimeStamp = 0 # This variable needs to be initialized with value 0
-infoRefreshTimeStamp = time() # This variable needs to be initialized with the value of time()
-timeWait = 1 # Amount of time to wait before moving a piece of text on the lcd
-lineTimeWait = 0  # Should have a value of 0, unless the moving text should wait extra long before restarting the line-scrolling
+timeWaitRefreshLcd = 0.8 # Time in seconds, refresh the LCD every x seconds (if any changes is detected)
+lastRefreshTimestamp = time() # This variable needs to be initialized with the value of time()
+emptyText = ' '.ljust(lcd_lenght)
 
-# Make sure the script doesn't throw errors
-songInfo=[' ', ' ', ' ',' ']
-textOne = ' '
-textTwo = ' '
-textThree = ' '
-textFour = ' '
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+# Edit the script below to meets your needs
+# Il bollettino viene emesso ogni giorno alle ore 13 con aggiornamenti alle ore 16 e alle ore 9
+# della mattina seguente. Gli aggiornamenti previsionali si riferiscono alla giornata in corso.
+# https://www.arpa.veneto.it/previsioni/it/xml/bollettino_utenti.xml
+timeWaitBeforeWhForecast = 40	# Time (in seconds) to wait before displaying the weather forecast
+timeShowWhForecast = 10			# Time (in seconds) to wait after the weather forecast is displayed
+xml_file = "/home/volumio/bollettino_utenti.xml"	# XML file
+xml_tappo = "/home/volumio/bollettino_utenti.tappo"	# If tappo file exists cron is still dowloading the xml
+lastForecastTimestamp = time()						# Last time we displayed the w.forecast
+firstSheet = True				# To manage morning/afternoon or afternoon/morning w.forecast display
+xml_days = ["lun","mar","mer","gio","ven","sab","dom"]
 
-def sendToLCD(lineNum, textToDisplay): #This function will send a string to the LCD screen
-	my_lcd.display_string(textToDisplay, lcd_position[lineNum])
+# Icons below are made of 3x2 chars 
+# 1. Cloudy w. icon
+ico01_idx = ['a5','a6']
+ico01 = [ 
+[0x00,0x00,0x00,0x00,0x01,0x03,0x03,0x06], 
+[0x00,0x00,0x00,0x1F,0x1F,0x00,0x00,0x00], 
+[0x00,0x00,0x00,0x00,0x10,0x18,0x18,0xC], 
+[0xC,0x18,0x18,0x18,0xF,0x07,0x00,0x00], 
+[0x00,0x00,0x00,0x00,0x1F,0x1F,0x00,0x00], 
+[0x06,0x03,0x03,0x03,0x1E,0x1C,0x00,0x00], 
+]
 
-welcomeTimestamp = time() # This variable needs to be initialized with the value of time()
 
-# Initialize the LCD to make sure the it always displays normal text instead of garbage
-sendToLCD(0, ' ')
-sendToLCD(1, ' ')
-sendToLCD(2, ' ')
-sendToLCD(3, ' ')
+# 2. Variable w. icon, no rain/snow
+ico02_idx = ['a2','a3','a4']
+ico02 = [ 
+[0x00,0x00,0x00,0x01,0x00,0x00,0x01,0x03], 
+[0x11,0x09,0x07,0x18,0x08,0x1F,0x1F,0x00], 
+[0x04,0x08,0x10,0xE,0x08,0x14,0x10,0x18], 
+[0x03,0x06,0xC,0x18,0x18,0x18,0xF,0x07], 
+[0x00,0x00,0x00,0x00,0x00,0x00,0x1F,0x1F], 
+[0x18,0xC,0x06,0x03,0x03,0x03,0x1E,0x1C], 
+]
+
+
+# 3. Sunny w. icon
+ico03_idx = ['a1']
+ico03 = [ 
+[0x00,0x00,0x08,0x04,0x03,0x03,0x1E,0x06], 
+[0x00,0x11,0x11,0x1F,0x1F,0x00,0x00,0x00], 
+[0x00,0x00,0x02,0x04,0x18,0x18,0xF,0xC], 
+[0x06,0x1E,0x03,0x03,0x04,0x08,0x00,0x00], 
+[0x00,0x00,0x00,0x1F,0x1F,0x11,0x11,0x00], 
+[0xC,0xF,0x18,0x18,0x04,0x02,0x00,0x00], 
+]
+
+
+# 4. Variable w. icon, with rain/snow
+ico04_idx = ['b1','b2','b5','b6','b8','b9','c1','c2','c5','c6','c8','c9','d1','d2','d5','d6','d8','d9','e1','e2','e5','e6','e8','e9']
+ico04 = [ 
+[0x00,0x00,0x00,0x01,0x00,0x00,0x01,0x03], 
+[0x11,0x09,0x07,0x18,0x08,0x17,0x1F,0x00], 
+[0x04,0x08,0x10,0xE,0x08,0x10,0x18,0x18], 
+[0x02,0x06,0xC,0x18,0x1F,0xD,0x04,0x02], 
+[0x00,0x00,0x00,0x00,0x1F,0x16,0x12,0x09], 
+[0x08,0xC,0x06,0x03,0x1F,0x1A,0x08,0x04], 
+]
+
+
+# 5. Rainy w. icon
+ico05_idx = ['b3','b4','b7','b10','c3','c7','c10','d3','d4','d7','d10','e3','e4','e7','e10']
+ico05 = [ 
+[0x00,0x00,0x01,0x03,0x03,0x06,0xC,0x18], 
+[0x00,0x1F,0x1F,0x00,0x00,0x00,0x00,0x00], 
+[0x00,0x00,0x10,0x18,0x18,0xC,0x06,0x03], 
+[0x18,0x18,0xF,0x07,0x02,0x01,0x00,0x00], 
+[0x00,0x00,0x1F,0x1F,0x09,0x04,0x12,0x00], 
+[0x03,0x03,0x1E,0x1C,0x04,0x12,0x09,0x00], 
+]
+
+
+# 6. Foggy w. icon
+ico06_idx = ['f1','f2','f3','f4']
+ico06 = [ 
+[0x00,0x00,0x00,0x1F,0x1F,0x00,0x00,0x1F], 
+[0x00,0x00,0x00,0x1F,0x1F,0x00,0x00,0x1F], 
+[0x00,0x00,0x00,0x1F,0x1F,0x00,0x00,0x1F], 
+[0x1F,0x00,0x00,0x1F,0x1F,0x00,0x00,0x00], 
+[0x1F,0x00,0x00,0x1F,0x1F,0x00,0x00,0x00], 
+[0x1F,0x00,0x00,0x1F,0x1F,0x00,0x00,0x00], 
+]
+
+# 7 Drop icon
+ico07 = [ 
+[0x04,0x04,0xE,0xE,0x1F,0x1D,0x1F,0xE], 
+]
+
+# 8 Temperature icon
+ico08 = [ 
+[0x04,0xA,0xA,0xE,0xE,0x1F,0x1B,0xE], 
+]
+
+# Some hints for displaying text to a 20x4 lcd
+# pos 1,1 = 0x80
+# pos 2,1 = 0x80 + 0x40
+# pos 3,1 = 0x80 + 0x14
+# pos 4,1 = 0x80 + 0x54
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 # Make sure all the functions are ready for to execute
 music_info = functions.MusicInfo()
+other_info = functions.OtherInfo()
 settings = functions.Settings()
 
 while(True):
@@ -58,10 +147,52 @@ while(True):
 		welcome_message_string_four_setting = plugin_settings['config_welcome_message_string_four']['value']
 		welcome_message_duration_setting = plugin_settings['config_welcome_message_duration']['value']
 		text_split_string_setting = plugin_settings['config_text_split_string']['value']
-		text_scroll = plugin_settings['config_text_scroll']['value']['value']
+		lcd_address = int(plugin_settings['config_lcd_address']['value'],16)
+		weather_forecast_bool_setting = plugin_settings['config_weather_forecast_bool']['value']
 		break
 	except:
-		print("Waiting for Volumio to get ready...")
+		print("Starting up...")
+
+#make sure python knows what an LCD is
+my_lcd = lcd(lcd_address)
+
+
+# Make sure the script doesn't throw errors
+songInfo=[' ', ' ', ' ',' ']
+textOne = ' '
+textTwo = ' '
+textThree = ' '
+textFour = ' '
+
+
+def sendToLCD(lineNum, textToDisplay): #This function will send a string to the LCD screen
+	my_lcd.lcd_display_string(textToDisplay, lcd_position[lineNum])
+
+def sendToLCD_Centered(lineNum, textToDisplay): #This function will send a string to the LCD screen and centering it
+	ll = len(textToDisplay)
+	centeredText = textToDisplay
+	if(ll < lcd_lenght):
+		centeredText = textToDisplay.center(lcd_lenght)
+	my_lcd.lcd_display_string(centeredText, lcd_position[lineNum])
+
+# Initialize the LCD to make sure the it always displays normal text instead of garbage
+my_lcd.lcd_clear()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # Show welcome message if the user enabled the feature
 if(welcome_message_bool_setting == True):
@@ -71,26 +202,25 @@ if(welcome_message_bool_setting == True):
 	sendToLCD(3, welcome_message_string_four_setting)
 	sleep(welcome_message_duration_setting)
 
-
 # Send text to the LCD-display
 try:
 	# Pre-define some counters and variables before entering while-loop
-	LCD_line_one_scroll_counter = 20
-	LCD_line_two_scroll_counter = 20
-	LCD_line_three_scroll_counter = 20
-	LCD_line_four_scroll_counter = 20
+	LCD_line_one_scroll_counter = lcd_lenght
+	LCD_line_two_scroll_counter = lcd_lenght
+	LCD_line_three_scroll_counter = lcd_lenght
+	LCD_line_four_scroll_counter = lcd_lenght
 
-	LCD_line_one_text_sent = False
-	LCD_line_two_text_sent = False
-	LCD_line_three_text_sent = False
-	LCD_line_four_text_sent = False
+	LCD_line_one_text_sent = "."
+	LCD_line_two_text_sent = "."
+	LCD_line_three_text_sent = "."
+	LCD_line_four_text_sent = "."
 
 	LCD_line_one = ' '
 	LCD_line_two = ' '
 	LCD_line_three = ' '
 	LCD_line_four = ' '
 
-	info_configured = False
+	todayDateStr = ' '
 
 	# retreive some useful info
 	info = music_info.retreive()
@@ -99,318 +229,273 @@ try:
 	album = info['album']
 	trackType = info['trackType']
 	status = info['status']
+
+	oinfo = other_info.retreive()
+	volume = str(oinfo['volume'])
+	last_volume = volume
+
 	title_splitter_found = False
-	if(text_scroll > 0):
-		if(str(text_scroll) == "1"):
-			# Value is 1, scroll the text if too long
-			while(True):
-				# Check for updates on the information we have
-				if(music_info.check_for_updates() !=  False):
-					sleep(0.5)
-					# Looks like there is an update to the info we have, update everything and reset scroll-counters
-					info = music_info.retreive()
-					LCD_line_one_scroll_counter = 20
-					LCD_line_two_scroll_counter = 20
-					LCD_line_three_scroll_counter = 20
-					LCD_line_four_scroll_counter = 20
-					# Make sure the new title, artist and album get sent to LCD
-					info_configured = False
-				# Extract title, artist and album from new info
-				if(info_configured == False):
-				 	title = str(info['title'])
-				 	artist = str(info['artist'])
-				 	album = str(info['album'])
-				 	trackType = str(info['trackType'])
-				 	status = str(info['status'])
 
-					if(str(trackType) == 'webradio' and info_configured == False and status != 'stop'):
-						# Webradio's always display their song-info in the title-value and their radio station in the artist-value,
-						# This creates a small problem: <song name>-<song artist> is a one-liner. This text needs to be split into 2 lines
-						# This for-loop starts at 1 and ends at title-1, because i want to ignore any '-' at the beginning and end of the 'title'
-						title = music_info.split_text(title)
-						if(status == 'play'):
-							# Display information about current webradio music
-							if(type(title) == list and len(title) == 2):
-								LCD_line_one = str(title[0])
-								LCD_line_two = str(title[1])
-								LCD_line_three = str(artist)
-								LCD_line_four = ' '
-							else:
-								LCD_line_one = str(title)
-								LCD_line_two = str(artist)
-								LCD_line_three = ' '
-								LCD_line_four = ' '
+	my_lcd.lcd_clear()
 
-					elif(str(trackType) != 'webradio' and info_configured == False and status != 'stop'):
-						# If every information we need is present, display it
-						if(len(str(title)) > 0 and len(str(artist)) > 0 and len(str(album)) > 0):
-							LCD_line_one = str(title)
-							LCD_line_two = str(artist)
-							if(len(str(album)) > 0):
-								LCD_line_three = str(album)
-							else:
-								LCD_line_three = " "
-							LCD_line_four = " "
-						# If some information is present, display it
-						elif(len(str(title)) > 0 and len(str(artist)) > 0):
-							LCD_line_one = str(title)
-							LCD_line_two = str(artist)
-							if(len(str(album)) > 0):
-								LCD_line_three = str(album)
-							else:
-								LCD_line_three = " "
-							LCD_line_four = " "
-						# If no info is present, do some funky stuff to the info, like remove .mp3/.wma/1./etc
-						elif(len(str(title)) > 0 and len(str(artist)) <= 0):
-							title = title.replace(".mp3", "").replace(".wma", "").replace(".flac", "").replace(". ", "")
-							try:
-								while(True):
-									int(title[0])
-									title = title[1::]
-							except:
-								print("\n")
-							
-							title = music_info.split_text(title)
-							if(len(str(title[1])) > 0):
-								LCD_line_one = str(title[0])
-								LCD_line_two = str(title[1])
-								if(len(str(album)) > 0):
-									LCD_line_three = str(album)
+	while(True):
+		sleep(timeWaitRefreshLcd)
+
+		if weather_forecast_bool_setting:
+			if(time() > lastForecastTimestamp + timeWaitBeforeWhForecast):
+				lastForecastTimestamp = time()
+				if not os.path.exists(xml_tappo):
+					if os.path.exists(xml_file):
+						if os.stat(xml_file).st_size != 0:
+							#Load wh forecast from xml file on disk
+							dati_analisi=ET.parse(xml_file)
+							base_dati = dati_analisi.getroot()
+
+							# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+							# Edit the script below to meets your needs
+							h = datetime.now().hour
+							xml_today = datetime.now().weekday()
+							xml_tomorrow = (0, xml_today + 1)[xml_today + 1 < 6]
+							meteogrammiTV = base_dati.find("meteogrammi/meteogramma/[@name='Treviso e pianura orientale']")
+							for meteogramma in meteogrammiTV:
+								scadenza = meteogramma.attrib["data"]
+								for meteogramma_dett in meteogramma:
+									value = meteogramma_dett.get('title')
+									if(value=="Simbolo"):
+										idx_ico = meteogramma_dett.attrib["value"][-6:][:2]
+									if(value=="Temperatura"):
+										temperatura = meteogramma_dett.attrib["value"]
+									if(value=="Probabilita' precipitazione"):
+										precipitazioni = meteogramma_dett.attrib["value"]
+										precipitazioni_val = int(precipitazioni.replace("%",""))
+								if(firstSheet):
+									if(xml_days[xml_today] == scadenza[:3]):
+										if(h <= 12 and scadenza.find("mattina") > 0):
+											break
+										elif(h  > 12 and scadenza.find("pomeriggio") > 0):
+											break
+										elif(scadenza.find("mattina") < 0 and scadenza.find("pomeriggio") < 0):
+											break
 								else:
-									LCD_line_three = " "
-						if(status == 'pause'):
-							LCD_line_four = "||"
+									if(xml_days[xml_tomorrow] == scadenza[:3]):
+										if(scadenza.find("mattina") > 0):
+											break
+										elif(scadenza.find("mattina") < 0 and scadenza.find("pomeriggio") < 0):
+											break
+							firstSheet = not firstSheet
+							if(idx_ico in ico01_idx):
+								my_lcd.lcd_load_custom_chars(ico01 + ico07 + ico08)
+							if(idx_ico in ico02_idx):
+								my_lcd.lcd_load_custom_chars(ico02 + ico07 + ico08)
+							if(idx_ico in ico03_idx):
+								my_lcd.lcd_load_custom_chars(ico03 + ico07 + ico08)
+							if(idx_ico in ico04_idx):
+								my_lcd.lcd_load_custom_chars(ico04 + ico07 + ico08)
+							if(idx_ico in ico05_idx):
+								my_lcd.lcd_load_custom_chars(ico05 + ico07 + ico08)
+							if(idx_ico in ico06_idx):
+								my_lcd.lcd_load_custom_chars(ico06 + ico07 + ico08)
+							my_lcd.lcd_clear()
+							# Write first three icon's chars to row 3, col 2 directly
+							my_lcd.lcd_write(0x80 + 0x15)
+							my_lcd.lcd_write_char(0)
+							my_lcd.lcd_write_char(1)
+							my_lcd.lcd_write_char(2)
+							# Write next three icon's chars to row 4, col 2 directly
+							my_lcd.lcd_write(0x80 + 0x55)
+							my_lcd.lcd_write_char(3)
+							my_lcd.lcd_write_char(4)
+							my_lcd.lcd_write_char(5)
+							# Display wheather forecast from xml
+							my_lcd.lcd_display_string(scadenza[:20].upper(),1,0)
+							my_lcd.lcd_display_string(temperatura.upper(),4,8)
+							if(precipitazioni_val > 0):
+								my_lcd.lcd_display_string("PROB. "+precipitazioni,3,8)
+								my_lcd.lcd_write(0x80 + 0x1A)
+								my_lcd.lcd_write_char(6)
+							my_lcd.lcd_write(0x80 + 0x5A)
+							my_lcd.lcd_write_char(7)
+							sleep(timeShowWhForecast)
+							my_lcd.lcd_clear()
+							LCD_line_one_text_sent = "."
+							LCD_line_two_text_sent = "."
+							LCD_line_three_text_sent = "."
+							LCD_line_four_text_sent = "."
+							# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-					else:
-						LCD_line_one = " "
-						LCD_line_two = " "
-						LCD_line_three = " "
-						if(status == 'pause'):
-							LCD_line_four = "||"
-						else:
-							LCD_line_four = " "
+		today = datetime.now()
+		todayDateStr = today.strftime("%d.%m.%Y %H:%M")
+		LCD_line_four = todayDateStr
 
-				# Fix types in case they have weird types like chars/arrays
-				LCD_line_one = str(LCD_line_one)
-				LCD_line_two = str(LCD_line_two)
-				LCD_line_three = str(LCD_line_three)
-				LCD_line_four = str(LCD_line_four)
+		if(other_info.check_for_updates() !=  False):
+			oinfo = other_info.retreive()
+			volume = str(oinfo['volume'])
 
-					# The following lines of code handle the output to the first line of the LCD
-				if(len(LCD_line_one) > 20):
-					if text_split_string_setting not in LCD_line_one:
-						#Add text-separator to text
-						LCD_line_one = LCD_line_one + str(text_split_string_setting)
-							# Scroll the first part of the text
-						if(LCD_line_one_scroll_counter<len(LCD_line_one)):
-							sendToLCD(0, LCD_line_one[LCD_line_one_scroll_counter-20:LCD_line_one_scroll_counter])
-							LCD_line_one_scroll_counter+=1
-						# Make sure the text reaches the beginning again
-					else:
-						# If text reached the beginning again, set the counter to initial value 20, NOT 0 (zero)
-						if(len(LCD_line_one[LCD_line_one_scroll_counter-20:]) <= 0):
-							LCD_line_one_scroll_counter = 20
-						# if the text reaches the end, do some magic to make te look like it scrolls through
-						else:
-							sendToLCD(0, LCD_line_one[LCD_line_one_scroll_counter-20:] + LCD_line_one[0:LCD_line_one_scroll_counter-len(LCD_line_one)])
-							LCD_line_one_scroll_counter+=1
+		if(volume != last_volume):
+			last_volume = volume
+			LCD_line_four = "Volume: " + volume + "%"
+			sendToLCD_Centered(3, LCD_line_four)
+			LCD_line_four_text_sent = LCD_line_four
+
+		#Do not resend any previously sent text
+		if(LCD_line_four_text_sent != LCD_line_four):
+			sendToLCD_Centered(3, LCD_line_four)
+			LCD_line_four_text_sent = LCD_line_four
+
+		# Check for updates on the information we have
+		if(music_info.check_for_updates() !=  False):
+			# Looks like there is an update to the info we have, update everything and reset scroll-counters
+			info = music_info.retreive()
+			LCD_line_one_scroll_counter = lcd_lenght
+			LCD_line_two_scroll_counter = lcd_lenght
+			LCD_line_three_scroll_counter = lcd_lenght
+
+			#clean-up lcd and reset last sent lines to lcd
+			sendToLCD(0, emptyText)
+			sendToLCD(1, emptyText)
+			sendToLCD(2, emptyText)
+			LCD_line_one_text_sent = "."
+			LCD_line_two_text_sent = "."
+			LCD_line_three_text_sent = "."
+
+		title = str(info['title'])
+		artist = str(info['artist'])
+		album = str(info['album'])
+		trackType = str(info['trackType'])
+		status = str(info['status'])
+		
+		if(str(trackType) == 'webradio' and status != 'stop'):
+			# Webradio's always display their song-info in the title-value and their radio station in the artist-value,
+			# This creates a small problem: <song name>-<song artist> is a one-liner. This text needs to be split into 2 lines
+			# This for-loop starts at 1 and ends at title-1, because i want to ignore any '-' at the beginning and end of the 'title'
+
+			title = music_info.split_text(title)
+			if(status == 'play'):
+				# Display information about current webradio music
+				if(type(title) == list and len(title) == 2):
+					LCD_line_one = str(title[0])
+					LCD_line_two = str(title[1])
+					LCD_line_three = str(artist)
 				else:
-					# Do not resend any previously sent text
-					if(LCD_line_one_text_sent != LCD_line_one):
-						sendToLCD(0, LCD_line_one)
-						LCD_line_one_text_sent = LCD_line_one
-				# The following lines of code handle the output to the second line of the LCD
-				if(len(LCD_line_two) > 20):
-					if text_split_string_setting not in LCD_line_two:
-						#Add text-separator to text
-						LCD_line_two = LCD_line_two + str(text_split_string_setting)
-							# Scroll the first part of the text
-						if(LCD_line_two_scroll_counter<len(LCD_line_two)):
-							sendToLCD(1, LCD_line_two[LCD_line_two_scroll_counter-20:LCD_line_two_scroll_counter])
-							LCD_line_two_scroll_counter+=1
-							# Make sure the text reaches the beginning again
-						else:
-							# If text reached the beginning again, set the counter to initial value 20, NOT 0 (zero)
-							if(len(LCD_line_two[LCD_line_two_scroll_counter-20:]) <= 0):
-								LCD_line_two_scroll_counter = 20
-							# if the text reaches the end, do some magic to make te look like it scrolls through
-							else:
-								sendToLCD(1, LCD_line_two[LCD_line_two_scroll_counter-20:] + LCD_line_two[0:LCD_line_two_scroll_counter-len(LCD_line_two)])
-								LCD_line_two_scroll_counter+=1
+					LCD_line_one = str(title)
+					LCD_line_two = str(artist)
+					LCD_line_three = ' '
+
+		elif(str(trackType) != 'webradio' and status != 'stop'):
+			# If every information we need is present, display it
+			if(len(str(title)) > 0 and len(str(artist)) > 0 and len(str(album)) > 0):
+				LCD_line_one = str(title)
+				LCD_line_two = str(artist)
+				if(len(str(album)) > 0):
+					LCD_line_three = str(album)
 				else:
-					# Do not resend any previously sent text
-					if(LCD_line_two_text_sent != LCD_line_two):
-						sendToLCD(1, LCD_line_two)
-						LCD_line_two_text_sent = LCD_line_two
-				# The following lines of code handle the output to the third line of the LCD
-				if(len(LCD_line_three) > 20):
-					if text_split_string_setting not in LCD_line_three:
-						#Add text-separator to text
-						LCD_line_three = LCD_line_three + str(text_split_string_setting)
-						# Scroll the first part of the text
-						if(LCD_line_three_scroll_counter<len(LCD_line_three)):
-							sendToLCD(2, LCD_line_three[LCD_line_three_scroll_counter-20:LCD_line_three_scroll_counter])
-							LCD_line_three_scroll_counter+=1
-						# Make sure the text reaches the beginning again
-						else:
-							# If text reached the beginning again, set the counter to initial value 20, NOT 0 (zero)
-							if(len(LCD_line_three[LCD_line_three_scroll_counter-20:]) <= 0):
-								LCD_line_three_scroll_counter = 20
-							# if the text reaches the end, do some magic to make te look like it scrolls through
-							else:
-								sendToLCD(2, LCD_line_three[LCD_line_three_scroll_counter-20:] + LCD_line_three[0:LCD_line_three_scroll_counter-len(LCD_line_three)])
-								LCD_line_three_scroll_counter+=1
+					LCD_line_three = " "
+			# If some information is present, display it
+			elif(len(str(title)) > 0 and len(str(artist)) > 0):
+				LCD_line_one = str(title)
+				LCD_line_two = str(artist)
+				if(len(str(album)) > 0):
+					LCD_line_three = str(album)
 				else:
-					# Do not resend any previously sent text
-					if(LCD_line_three_text_sent != LCD_line_three):
-						sendToLCD(2, LCD_line_three)
-						LCD_line_three_text_sent = LCD_line_three
+					LCD_line_three = " "
+			# If no info is present, do some funky stuff to the info, like remove .mp3/.wma/1./etc
+			elif(len(str(title)) > 0 and len(str(artist)) <= 0):
+				title = title.replace(".mp3", "").replace(".wma", "").replace(".flac", "").replace(". ", "")
+				try:
+					while(True):
+						int(title[0])
+						title = title[1::]
+				except:
+					print("\n")
 				
-				#handle LCD line four as well	
-				if(len(LCD_line_four) > 20):
-					if text_split_string_setting not in LCD_line_four:
-						#Add text-separator to text
-						LCD_line_four = LCD_line_four + str(text_split_string_setting)
-							# Scroll the first part of the text
-						if(LCD_line_four_scroll_counter<len(LCD_line_four)):
-							sendToLCD(3, LCD_line_four[LCD_line_four_scroll_counter-20:LCD_line_four_scroll_counter])
-							LCD_line_four_scroll_counter+=1
-						# Make sure the text reaches the beginning again
-						else:
-							# If text reached the beginning again, set the counter to initial value 20, NOT 0 (zero)
-							if(len(LCD_line_four[LCD_line_four_scroll_counter-20:]) <= 0):
-								LCD_line_four_scroll_counter = 20
-							# if the text reaches the end, do some magic to make te look like it scrolls through
-							else:
-								sendToLCD(3, LCD_line_four[LCD_line_four_scroll_counter-20:] + LCD_line_four[0:LCD_line_four_scroll_counter-len(LCD_line_four)])
-								LCD_line_four_scroll_counter+=1
+				title = music_info.split_text(title)
+				if(len(str(title[1])) > 0):
+					LCD_line_one = str(title[0])
+					LCD_line_two = str(title[1])
+					if(len(str(album)) > 0):
+						LCD_line_three = str(album)
 					else:
-						# Do not resend any previously sent text
-						if(LCD_line_four_text_sent != LCD_line_four):
-							sendToLCD(3, LCD_line_four)
-							LCD_line_four_text_sent = LCD_line_four
-				sleep(1.2)
-		elif(str(text_scroll) == "2"):
-			# Value is 2, truncate the text
-			while(True):
-				# Check for updates on the information we have
-				if(music_info.check_for_updates() !=  False):
-					sleep(0.5)
-					# Looks like there is an update to the info we have, update everything and reset scroll-counters
-					info = music_info.retreive()
-					LCD_line_one_scroll_counter = 20
-					LCD_line_two_scroll_counter = 20
-					LCD_line_three_scroll_counter = 20
-					LCD_line_four_scroll_counter = 20
-					# Make sure the new title, artist and album get sent to LCD
-					info_configured = False
-				# Extract title, artist and album from new info
-				if(info_configured == False):
-				 	title = str(info['title'])
-				 	artist = str(info['artist'])
-				 	album = str(info['album'])
-				 	trackType = str(info['trackType'])
-				 	status = str(info['status'])
-
-					if(str(trackType) == 'webradio' and info_configured == False and status != 'stop'):
-						# Webradio's always display their song-info in the title-value and their radio station in the artist-value,
-						# This creates a small problem: <song name>-<song artist> is a one-liner. This text needs to be split into 2 lines
-						# This for-loop starts at 1 and ends at title-1, because i want to ignore any '-' at the beginning and end of the 'title'
-						title = music_info.split_text(title)
-						if(status == 'play'):
-							# Display information about current webradio music
-							if(type(title) == list and len(title) == 2):
-								LCD_line_one = str(title[0])
-								LCD_line_two = str(title[1])
-								LCD_line_three = str(artist)
-								LCD_line_four = ' '
-							else:
-								LCD_line_one = str(title)
-								LCD_line_two = str(artist)
-								LCD_line_three = ' '
-								LCD_line_four = ' '
-
-					elif(str(trackType) != 'webradio' and info_configured == False and status != 'stop'):
-						# If every information we need is present, display it
-						if(len(str(title)) > 0 and len(str(artist)) > 0 and len(str(album)) > 0):
-							LCD_line_one = str(title)
-							LCD_line_two = str(artist)
-							if(len(str(album)) > 0):
-								LCD_line_three = str(album)
-							else:
-								LCD_line_three = " "
-							LCD_line_four = " "
-						# If some information is present, display it
-						elif(len(str(title)) > 0 and len(str(artist)) > 0):
-							LCD_line_one = str(title)
-							LCD_line_two = str(artist)
-							if(len(str(album)) > 0):
-								LCD_line_three = str(album)
-							else:
-								LCD_line_three = " "
-							LCD_line_four = " "
-						# If no info is present, do some funky stuff to the info, like remove .mp3/.wma/1./etc
-						elif(len(str(title)) > 0 and len(str(artist)) <= 0):
-							title = title.replace(".mp3", "").replace(".wma", "").replace(".flac", "").replace(". ", "")
-							try:
-								while(True):
-									int(title[0])
-									title = title[1::]
-							except:
-								print("\n")
-							
-							title = music_info.split_text(title)
-							if(len(str(title[1])) > 0):
-								LCD_line_one = str(title[0])
-								LCD_line_two = str(title[1])
-								if(len(str(album)) > 0):
-									LCD_line_three = str(album)
-								else:
-									LCD_line_three = " "
-						if(status == 'pause'):
-							LCD_line_four = "||"
-
-					else:
-						LCD_line_one = " "
-						LCD_line_two = " "
 						LCD_line_three = " "
-						if(status == 'pause'):
-							LCD_line_four = "||"
-						else:
-							LCD_line_four = " "
 
-				# Fix types in case they have weird types like chars/arrays
-				# Also, cut the text because the user wants that
-				LCD_line_one = str(LCD_line_one[0:20])
-				LCD_line_two = str(LCD_line_two[0:20])
-				LCD_line_three = str(LCD_line_three[0:20])
-				LCD_line_four = str(LCD_line_four[0:20])
-
-
-				if(LCD_line_one_text_sent != LCD_line_one):
-					sendToLCD(0, LCD_line_one)
-					LCD_line_one_text_sent = LCD_line_one
-				if(LCD_line_two_text_sent != LCD_line_two):
-					sendToLCD(1, LCD_line_two)
-					LCD_line_two_text_sent = LCD_line_two
-				if(LCD_line_three_text_sent != LCD_line_three):
-					sendToLCD(2, LCD_line_three)
-					LCD_line_three_text_sent = LCD_line_three
-				if(LCD_line_four_text_sent != LCD_line_four):
-					sendToLCD(3, LCD_line_four)
-					LCD_line_four_text_sent = LCD_line_four
-				sleep(1.2)
-
-		elif(str(text_scroll) != "1" or str(text_scroll) != "2"):
-			# Something went VERY wrong, cannot continue
-			print("Woah! This script did NOT load the settings correctly! Exiting...")
-			exit(1)
 		else:
-			print("\nCannot determine what to do, scroll the text or truncate the text.")
-			print("This problem can occur when the current settings-file (config.json) does not contain the new settings entries after updating the plugin.")
-			print("Try deleting '/data/configuration/user_interface/lcdcontroller/config.json' and reconfiguring the plugin settings via the plugin-manager.")
+			LCD_line_one = " "
+			LCD_line_two = " "
+			LCD_line_three = " "
 
+		# Fix types in case they have weird types like chars/arrays
+		LCD_line_one = str(LCD_line_one)
+		LCD_line_two = str(LCD_line_two)
+		LCD_line_three = str(LCD_line_three)
 
+		# The following lines of code handle the output to the first line of the LCD
+		if(len(LCD_line_one) > lcd_lenght):
+			if text_split_string_setting not in LCD_line_one:
+				#Add text-separator to text
+				LCD_line_one = LCD_line_one + str(text_split_string_setting)
+				# Scroll the first part of the text
+			if(LCD_line_one_scroll_counter<len(LCD_line_one)):
+				sendToLCD(0, LCD_line_one[LCD_line_one_scroll_counter-lcd_lenght:LCD_line_one_scroll_counter])
+				LCD_line_one_scroll_counter+=1
+				# Make sure the text reaches the beginning again
+			else:
+				# If text reached the beginning again, set the counter to initial value 20, NOT 0 (zero)
+				if(len(LCD_line_one[LCD_line_one_scroll_counter-lcd_lenght:]) <= 0):
+					LCD_line_one_scroll_counter = lcd_lenght
+				# if the text reaches the end, do some magic to make te look like it scrolls through
+				else:
+					sendToLCD(0, LCD_line_one[LCD_line_one_scroll_counter-lcd_lenght:] + LCD_line_one[0:LCD_line_one_scroll_counter-len(LCD_line_one)])
+					LCD_line_one_scroll_counter+=1
+		else:
+			# Do not resend any previously sent text
+			if(LCD_line_one_text_sent != LCD_line_one):
+				sendToLCD_Centered(0, LCD_line_one)
+				LCD_line_one_text_sent = LCD_line_one
+		# The following lines of code handle the output to the second line of the LCD
+		if(len(LCD_line_two) > lcd_lenght):
+			if text_split_string_setting not in LCD_line_two:
+				#Add text-separator to text
+				LCD_line_two = LCD_line_two + str(text_split_string_setting)
+					# Scroll the first part of the text
+				if(LCD_line_two_scroll_counter<len(LCD_line_two)):
+					sendToLCD(1, LCD_line_two[LCD_line_two_scroll_counter-lcd_lenght:LCD_line_two_scroll_counter])
+					LCD_line_two_scroll_counter+=1
+					# Make sure the text reaches the beginning again
+				else:
+					# If text reached the beginning again, set the counter to initial value 20, NOT 0 (zero)
+					if(len(LCD_line_two[LCD_line_two_scroll_counter-lcd_lenght:]) <= 0):
+						LCD_line_two_scroll_counter = lcd_lenght
+					# if the text reaches the end, do some magic to make te look like it scrolls through
+					else:
+						sendToLCD(1, LCD_line_two[LCD_line_two_scroll_counter-lcd_lenght:] + LCD_line_two[0:LCD_line_two_scroll_counter-len(LCD_line_two)])
+						LCD_line_two_scroll_counter+=1
+		else:
+			# Do not resend any previously sent text
+			if(LCD_line_two_text_sent != LCD_line_two):
+				sendToLCD_Centered(1, LCD_line_two)
+				LCD_line_two_text_sent = LCD_line_two
+		# The following lines of code handle the output to the third line of the LCD
+		if(len(LCD_line_three) > lcd_lenght):
+			if text_split_string_setting not in LCD_line_three:
+				#Add text-separator to text
+				LCD_line_three = LCD_line_three + str(text_split_string_setting)
+				# Scroll the first part of the text
+				if(LCD_line_three_scroll_counter<len(LCD_line_three)):
+					sendToLCD(2, LCD_line_three[LCD_line_three_scroll_counter-lcd_lenght:LCD_line_three_scroll_counter])
+					LCD_line_three_scroll_counter+=1
+				# Make sure the text reaches the beginning again
+				else:
+					# If text reached the beginning again, set the counter to initial value 20, NOT 0 (zero)
+					if(len(LCD_line_three[LCD_line_three_scroll_counter-lcd_lenght:]) <= 0):
+						LCD_line_three_scroll_counter = lcd_lenght
+					# if the text reaches the end, do some magic to make te look like it scrolls through
+					else:
+						sendToLCD(2, LCD_line_three[LCD_line_three_scroll_counter-lcd_lenght:] + LCD_line_three[0:LCD_line_three_scroll_counter-len(LCD_line_three)])
+						LCD_line_three_scroll_counter+=1
+		else:
+			# Do not resend any previously sent text
+			if(LCD_line_three_text_sent != LCD_line_three):
+				sendToLCD_Centered(2, LCD_line_three)
+				LCD_line_three_text_sent = LCD_line_three
 
 except KeyboardInterrupt:
 	print('\nCtrl-C caught\nExiting')
