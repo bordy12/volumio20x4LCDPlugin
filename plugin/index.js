@@ -113,22 +113,22 @@ lcdcontroller.prototype.getUIConfig = function() {
 
 			// Load config_text_split_string into UIconfig
 			uiconf.sections[0].content[0].value = self.config.get('config_text_split_string');
-      // Load text_scroll into UIconfig
-      uiconf.sections[0].content[1].value = self.config.get('config_text_scroll');
 			// Load config_welcome_message_bool into UIconfig
-			uiconf.sections[0].content[2].value = self.config.get('config_welcome_message_bool');
+			uiconf.sections[0].content[1].value = self.config.get('config_welcome_message_bool');
 			// // Load config_welcome_message_duration into UIconfig
-			uiconf.sections[0].content[3].value = self.config.get('config_welcome_message_duration');
+			uiconf.sections[0].content[2].value = self.config.get('config_welcome_message_duration');
 			// // Load config_welcome_message_string_one into UIconfig
-			uiconf.sections[0].content[4].value = self.config.get('config_welcome_message_string_one');
+			uiconf.sections[0].content[3].value = self.config.get('config_welcome_message_string_one');
 			// // Load config_welcome_message_string_two into UIconfig
-			uiconf.sections[0].content[5].value = self.config.get('config_welcome_message_string_two');
+			uiconf.sections[0].content[4].value = self.config.get('config_welcome_message_string_two');
 			// Load config_welcome_message_string_three into UIconfig
-			uiconf.sections[0].content[6].value = self.config.get('config_welcome_message_string_three');
+			uiconf.sections[0].content[5].value = self.config.get('config_welcome_message_string_three');
 			// Load config_welcome_message_string_four into UIconfig
-			uiconf.sections[0].content[7].value = self.config.get('config_welcome_message_string_four');
+			uiconf.sections[0].content[6].value = self.config.get('config_welcome_message_string_four');
 			// Load config_lcd_address into UIconfig
-			uiconf.sections[0].content[8].value = self.config.get('config_lcd_address');
+			uiconf.sections[0].content[7].value = self.config.get('config_lcd_address');
+			// Load config_weather_forecast_bool into UIconfig
+			uiconf.sections[0].content[8].value = self.config.get('config_weather_forecast_bool');
 			// Tell Volumio everything went very well
 			defer.resolve(uiconf);
 		})
@@ -151,8 +151,6 @@ lcdcontroller.prototype.saveUIConfig = function(data) {
 
    // Save text_split_string's value in config_text_split_string in config.json
    self.config.set('config_text_split_string', data['text_split_string']);
-   // Save text_scroll's value into config.json
-   self.config.set('config_text_scroll', data['text_scroll']);
    // Save welcome_message_bool's value in config_welcome_message_bool in config.json
    self.config.set('config_welcome_message_bool', data['welcome_message_bool']);
    // Save welcome_message_duration's value in config_welcome_message_duration in config.json
@@ -167,6 +165,8 @@ lcdcontroller.prototype.saveUIConfig = function(data) {
    self.config.set('config_welcome_message_string_four', data['welcome_message_string_four']);
    // Save lcd_address's value in config_lcd_address in config.json
    self.config.set('config_lcd_address', data['lcd_address']);
+   // Save config_weather_forecast_bool's value in config_weather_forecast_bool in config.json
+   self.config.set('config_weather_forecast_bool', data['weather_forecast_bool']);
 
    // After saving all settings, restart the LCDcontroller
    var waitTimestamp = new Date(new Date().getTime() + 4000);

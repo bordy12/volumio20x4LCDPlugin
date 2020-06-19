@@ -3,13 +3,6 @@
       "type": "string",
       "value": "|"
   },
-  "config_text_scroll": {
-    "type": "select",
-    "value": {
-      "value": 1,
-      "label": "Scroll"
-    }
-  },
   "config_welcome_message_bool": {
     "type": "boolean",
     "value": false
@@ -20,22 +13,26 @@
   },
   "config_welcome_message_string_one": {
     "type": "string",
-    "value": " "
+    "value": "."
   },
   "config_welcome_message_string_two": {
     "type": "string",
-    "value": " "
+    "value": "."
   },
   "config_welcome_message_string_three": {
     "type": "string",
-    "value": " "
+    "value": "."
   },
   "config_welcome_message_string_four": {
     "type": "string",
-    "value": " "
+    "value": "."
   },
   "config_lcd_address": {
     "type": "string",
-    "value": "0x3F"
+    "value": "0x27"
+  },
+  "config_weather_forecast_bool": {
+    "type": "boolean",
+    "value": false
   }
 }

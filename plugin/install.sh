@@ -8,9 +8,9 @@ echo "    Executing: sudo apt-get sudo apt-get -y install python-mpd python-smbu
 # TODO: UNCOMMENT THIS!
 # sudo apt-get -y install python-mpd python-smbus
 
-echo "Making LCD-controller python-script executable"
-echo "    Executing: sudo chmod +x /data/plugins/user_interface/lcdcontroller/LCDcontroller/scrollText.py"
-sudo chmod +x /data/plugins/user_interface/lcdcontroller/LCDcontroller/scrollText.py
+#echo "Making LCD-controller python-script executable"
+#echo "    Executing: sudo chmod +x /data/plugins/user_interface/lcdcontroller/LCDcontroller/scrollText.py"
+#sudo chmod +x /data/plugins/user_interface/lcdcontroller/LCDcontroller/scrollText.py
 
 echo "If the plugin does not turn on after installing, restart Volumio"
 echo "plugininstallend"

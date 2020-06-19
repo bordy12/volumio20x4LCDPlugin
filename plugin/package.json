@@ -1,16 +1,16 @@
 {
 	"name": "lcdcontroller",
 	"version": "1.0.0",
-	"description": "Plugin to send music information to a 20x4 LCD using I2C",
+	"description": "Plugin to send music information to a 20x4 LCD using I2C and display weather informations",
 	"main": "index.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
-	"author": "Tom Niesse",
+	"author": "Emanuele Bordin",
 	"license": "ISC",
 	"volumio_info": {
 		"prettyName": "LCDcontroller",
-		"icon": "microchip",
+		"icon": "fa-microchip",
 		"plugin_type": "user_interface"
 	},
 	"dependencies": {
