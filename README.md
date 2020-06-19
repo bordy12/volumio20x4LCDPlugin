@@ -16,7 +16,7 @@ The plugin can display information about music files and webradio's when they ar
   - Separating 'title - artist-name - album-name' into<br>title<br>artist-name<br>album-name<br>for webradios and music files
   - Displaying a welcome-message at startup
   - Displaying volume % when it changes
-  - Displaying weather forecast (needs edit the main.py to meets your needs first!)
+  - Displaying weather forecast (edit the main.py to meets your needs first!)
 
 The plugin can auto-update information when it changes, for exmaple, switching from webradio to a music file, pausing music files, etc.
 
