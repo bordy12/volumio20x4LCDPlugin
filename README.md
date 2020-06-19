@@ -30,8 +30,10 @@ Weather forecast XML file has to be downloaded in the home dir with an external 
 ## How to install the plugin
 
 Clone and extract the archive onto a new directory of your Pi's home (eg. /home/volumio/lcdcontroller)
-Then type: 
+Then type:
+
 cd /home/volumio/lcdcontroller
+
 volumio plugin install
 
 ## How to uninstall the plugin
