@@ -1,0 +1,32 @@
+{
+  "PLUGIN_CONFIGURATION":"Impostazioni LCD",
+  "TITLE":"Impostazione per il display LCD",
+  "SAVE":"Salva e riavvia il plugin",
+  
+  "TEXTSPLITLABEL":"Separatore di testo per scrolling",
+  "TEXTSPLITDOC":"Se il nome di una canzone o di un artista fossero troppo lunghi da visualizzare, il testo inzierà a scrollare. Raggiunta la fine lo scrolling del testo ripartirà dall'inizio. Il separatore può anche essere lasciato vuoto.",
+
+  "WELCOMEMESSAGEBOOLLABEL":"Messaggio di benvenuto",
+  "WELCOMEMESSAGEBOOLDOC":"Se attivo visualizza un messaggio di benvenuto. Il testo del messaggio può essere definito nei campi sottostanti.",
+
+  "WELCOMEMESSAGEDURATIONLABEL":"Durata del messaggio di benvenuto in secondi",
+  "WELCOMEMESSAGEDURATIONDOC":"Per quanto tempo deve essere visualizzato il messaggio di benvenuto?",
+
+  "WELCOMEMESSAGELABEL1":"Prima riga del messaggio di benvenuto",
+  "WELCOMEMESSAGEDOC1":"Il display LCD può visualizzare un messaggio all'avvio. Inserire qui la prima riga del messaggio.",
+
+  "WELCOMEMESSAGELABEL2":"Seconda riga del messaggio di benvenuto",
+  "WELCOMEMESSAGEDOC2":"Il display LCD può visualizzare un messaggio all'avvio. Inserire qui la seconda riga del messaggio.",
+
+  "WELCOMEMESSAGELABEL3":"Terza riga del messaggio di benvenuto",
+  "WELCOMEMESSAGEDOC3":"Il display LCD può visualizzare un messaggio all'avvio. Inserire qui la terza riga del messaggio.",
+
+  "WELCOMEMESSAGELABEL4":"Quarta riga del messaggio di benvenuto",
+  "WELCOMEMESSAGEDOC1":"Il display LCD può visualizzare un messaggio all'avvio. Inserire qui la quarta riga del messaggio.",
+
+  "LCDADDRESSLABEL":"Indirizzo I2C LCD",
+  "LCDADDRESSDOC":"Non tutti i controlloer I2C sono uguali e non tutti usano il medesimo indirizzo per comunicare con il sistema host. Gli indirizzi più comuni di solito sono 0x27 o 0x3F.",
+
+  "WEATHERFORECASTBOOLLABEL":"Visualizza le previsioni del tempo",
+  "WEATHERFORECASTBOOLDOC":"Edita lo script python 'main.py' prima di abilitare questa opzione!"
+}
