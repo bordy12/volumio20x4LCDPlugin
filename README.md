@@ -2,8 +2,8 @@
 
 Welcome to the project page for a plugin I created for Volumio2 for the Raspberry Pi 3.
 It can retreive information about songs and webradio's and print them on an LCD-screen with I2C (4x20).<br>Pictures of the 4x20 LCD:<br>
-<img width="380px" src='https://www.raspberrypi-spy.co.uk/wp-content/uploads/2015/04/i2c_backpack_02-1024x597.jpg' alt='LCD_back'><br>
-<img width="380px" src='http://domoticx.com/wp-content/uploads/YM2004A-LCD-Display-2x20-4x20.jpg' alt="LCD_front">
+<img width="380px" src='https://user-images.githubusercontent.com/20586835/85121964-16d85880-b226-11ea-9532-93dd40dd7e59.jpg' alt='MyRadio_01'><br>
+<img width="380px" src='https://user-images.githubusercontent.com/20586835/85121980-2061c080-b226-11ea-9343-be43a803f042.jpg' alt="MyRadio_02">
 
 ## Plugin features
 
