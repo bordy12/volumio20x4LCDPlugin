@@ -4,7 +4,7 @@ Welcome to the project page for a plugin I created for Volumio2 for the Raspberr
 This project belongs to the one created by Tom Niesse, I rewrote the main python procedure, it now uses a slightly different I2C driver I need to manage my custom characters set.
 It can retreive information about songs and webradio's and print them on an LCD-screen with I2C (4x20).
 
-I fitted the Pi2 into an ex-FM radio case i have found somewhere in my house, this is the result:
+I fitted the Pi2 and the LCD into an FM radio case i have found somewhere in my house, this is the result:
 <img width="380px" src='https://user-images.githubusercontent.com/20586835/85121964-16d85880-b226-11ea-9532-93dd40dd7e59.jpg' alt='MyRadio_01'><br>
 <img width="380px" src='https://user-images.githubusercontent.com/20586835/85121980-2061c080-b226-11ea-9343-be43a803f042.jpg' alt="MyRadio_02">
 
