@@ -267,7 +267,9 @@ try:
 										temperatura = meteogramma_dett.attrib["value"]
 									if(value=="Probabilita' precipitazione"):
 										precipitazioni = meteogramma_dett.attrib["value"]
-										precipitazioni_val = int(precipitazioni.replace("%",""))
+										precipitazioni_val = 0
+										if(precipitazioni):
+											precipitazioni_val = int(precipitazioni.replace("%",""))
 								if(firstSheet):
 									if(xml_days[xml_today] == scadenza[:3]):
 										if(h <= 12 and scadenza.find("mattina") > 0):
