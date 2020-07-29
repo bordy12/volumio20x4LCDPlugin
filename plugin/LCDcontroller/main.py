@@ -1,5 +1,7 @@
 #! /usr/bin/env python
 
+#http://www.martyncurrey.com/arduino-with-hd44780-based-lcds/
+
 #Import libraries to manage xml wh forecast
 import urllib2
 import xml.etree.ElementTree as ET
@@ -38,7 +40,7 @@ timeShowWhForecast = 10			# Time (in seconds) to wait after the weather forecast
 xml_file = "/home/volumio/bollettino_utenti.xml"	# XML file
 xml_tappo = "/home/volumio/bollettino_utenti.tappo"	# If tappo file exists cron is still dowloading the xml
 lastForecastTimestamp = time()						# Last time we displayed the w.forecast
-firstSheet = True				# To manage morning/afternoon or afternoon/morning w.forecast display
+forecastSheet = 1
 xml_days = ["lun","mar","mer","gio","ven","sab","dom"]
 
 # Icons below are made of 3x2 chars 
@@ -122,7 +124,6 @@ ico07 = [
 ico08 = [ 
 [0x04,0xA,0xA,0xE,0xE,0x1F,0x1B,0xE], 
 ]
-
 # Some hints for displaying text to a 20x4 lcd
 # pos 1,1 = 0x80
 # pos 2,1 = 0x80 + 0x40
@@ -177,22 +178,6 @@ def sendToLCD_Centered(lineNum, textToDisplay): #This function will send a strin
 
 # Initialize the LCD to make sure the it always displays normal text instead of garbage
 my_lcd.lcd_clear()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 # Show welcome message if the user enabled the feature
 if(welcome_message_bool_setting == True):
@@ -270,21 +255,33 @@ try:
 										precipitazioni_val = 0
 										if(precipitazioni):
 											precipitazioni_val = int(precipitazioni.replace("%",""))
-								if(firstSheet):
+								if(forecastSheet == 1):
 									if(xml_days[xml_today] == scadenza[:3]):
 										if(h <= 12 and scadenza.find("mattina") > 0):
 											break
-										elif(h  > 12 and scadenza.find("pomeriggio") > 0):
+										elif(h > 12 and scadenza.find("pomeriggio") > 0):
 											break
 										elif(scadenza.find("mattina") < 0 and scadenza.find("pomeriggio") < 0):
 											break
-								else:
+								if(forecastSheet == 2):
+									if(xml_days[xml_today] == scadenza[:3]):
+										if(h <= 12 and scadenza.find("pomeriggio") > 0):
+											break
+										elif(scadenza.find("mattina") < 0 and scadenza.find("pomeriggio") < 0):
+											break
 									if(xml_days[xml_tomorrow] == scadenza[:3]):
-										if(scadenza.find("mattina") > 0):
+										if(h > 12 and scadenza.find("mattina") > 0):
 											break
 										elif(scadenza.find("mattina") < 0 and scadenza.find("pomeriggio") < 0):
 											break
-							firstSheet = not firstSheet
+								if(forecastSheet == 3):
+									if(xml_days[xml_tomorrow] == scadenza[:3]):
+										if(h <= 12 and scadenza.find("mattina") > 0):
+											break
+										if(h > 12 and scadenza.find("pomeriggio") > 0):
+											break
+										elif(scadenza.find("mattina") < 0 and scadenza.find("pomeriggio") < 0):
+											break
 							if(idx_ico in ico01_idx):
 								my_lcd.lcd_load_custom_chars(ico01 + ico07 + ico08)
 							if(idx_ico in ico02_idx):
@@ -310,6 +307,17 @@ try:
 							my_lcd.lcd_write_char(5)
 							# Display wheather forecast from xml
 							my_lcd.lcd_display_string(scadenza[:20].upper(),1,0)
+							if(idx_ico[:1] == "c"):
+								my_lcd.lcd_display_string("*Temporali*",2,0)
+								my_lcd.lcd_display_string(str(forecastSheet) + "/3",2,17)
+							elif(idx_ico[:1] == "d"):
+								my_lcd.lcd_display_string("*Neve*",2,0)
+								my_lcd.lcd_display_string(str(forecastSheet) + "/3",2,17)
+							elif(idx_ico[:1] == "e"):
+								my_lcd.lcd_display_string("*Neve e Pioggia*",2,0)
+								my_lcd.lcd_display_string(str(forecastSheet) + "/3",2,17)
+							else:
+								my_lcd.lcd_display_string(str(forecastSheet) + "/3",2,8)
 							my_lcd.lcd_display_string(temperatura.upper(),4,8)
 							if(precipitazioni_val > 0):
 								my_lcd.lcd_display_string("PROB. "+precipitazioni,3,8)
@@ -317,6 +325,9 @@ try:
 								my_lcd.lcd_write_char(6)
 							my_lcd.lcd_write(0x80 + 0x5A)
 							my_lcd.lcd_write_char(7)
+							forecastSheet += 1
+							if(forecastSheet > 3):
+								forecastSheet = 1
 							sleep(timeShowWhForecast)
 							my_lcd.lcd_clear()
 							LCD_line_one_text_sent = "."
