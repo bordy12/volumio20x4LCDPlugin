@@ -4,6 +4,8 @@ import os
 import json
 import socket
 
+from unicodedata import normalize
+
 # This class will handle the retreivement of all the music-info if there is new info
 class MusicInfo():
     # Constructor

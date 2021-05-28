@@ -5,6 +5,8 @@
 #Import libraries to manage xml wh forecast
 import urllib2
 import xml.etree.ElementTree as ET
+import logging
+logging.basicConfig(filename='/var/log/lcdcontroller.log',level=logging.DEBUG)
 
 # Import settings.py (settings.py is stored in the same folder as this file and contains a function that converts the config.json into a python dictionary)
 import functions
@@ -15,6 +17,9 @@ from time import *
 from sys import *
 from math import *
 from datetime import datetime
+
+#from unicodedata import normalize
+import unicodedata
 
 #import LCD-related python libs
 from I2C_LCD_driver import lcd
@@ -208,8 +213,14 @@ try:
 	todayDateStr = ' '
 
 	# retreive some useful info
+	#info = music_info.retreive()
+	#title = info['title']
+	#artist = info['artist']
+	#album = info['album']
+	#trackType = info['trackType']
+	#status = info['status']
+
 	info = music_info.retreive()
-	title = info['title']
 	artist = info['artist']
 	album = info['album']
 	trackType = info['trackType']
@@ -371,7 +382,13 @@ try:
 			LCD_line_two_text_sent = "."
 			LCD_line_three_text_sent = "."
 
-		title = str(info['title'])
+		if(info['title'] is not None):
+			unicodedata.normalize('NFKD', info['title']).encode('ascii', 'ignore')
+		if(info['artist'] is not None):
+			unicodedata.normalize('NFKD', info['artist']).encode('ascii', 'ignore')
+		if(info['album'] is not None):
+			unicodedata.normalize('NFKD', info['album']).encode('ascii', 'ignore')
+		title = str(info['title'])		
 		artist = str(info['artist'])
 		album = str(info['album'])
 		trackType = str(info['trackType'])
@@ -510,6 +527,12 @@ try:
 				sendToLCD_Centered(2, LCD_line_three)
 				LCD_line_three_text_sent = LCD_line_three
 
-except KeyboardInterrupt:
-	print('\nCtrl-C caught\nExiting')
-	exit(0)
+except Exception as e:
+    #print str(e) 
+    #logging.warning(str(e))
+    logging.exception(str(e))
+    exit(0)
+
+# except KeyboardInterrupt:
+	# print('\nCtrl-C caught\nExiting')
+	# exit(0)
