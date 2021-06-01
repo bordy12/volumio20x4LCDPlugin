@@ -383,12 +383,9 @@ try:
 			LCD_line_three_text_sent = "."
 
 		if(info['title'] is not None):
-			unicodedata.normalize('NFKD', info['title']).encode('ascii', 'ignore')
-		if(info['artist'] is not None):
-			unicodedata.normalize('NFKD', info['artist']).encode('ascii', 'ignore')
-		if(info['album'] is not None):
-			unicodedata.normalize('NFKD', info['album']).encode('ascii', 'ignore')
-		title = str(info['title'])		
+			title = unicodedata.normalize('NFKD', info['title']).encode('ascii', 'ignore')
+		else:
+			title = str(info['title'])
 		artist = str(info['artist'])
 		album = str(info['album'])
 		trackType = str(info['trackType'])
