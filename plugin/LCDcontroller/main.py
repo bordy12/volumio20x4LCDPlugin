@@ -181,6 +181,12 @@ def sendToLCD_Centered(lineNum, textToDisplay): #This function will send a strin
 		centeredText = textToDisplay.center(lcd_lenght)
 	my_lcd.lcd_display_string(centeredText, lcd_position[lineNum])
 
+def safe_str(obj):
+	try: return str(obj)
+	except UnicodeEncodeError:
+		return obj.encode('ascii', 'ignore').decode('ascii')
+	return ""
+
 # Initialize the LCD to make sure the it always displays normal text instead of garbage
 my_lcd.lcd_clear()
 
@@ -382,10 +388,12 @@ try:
 			LCD_line_two_text_sent = "."
 			LCD_line_three_text_sent = "."
 
-		if(info['title'] is not None):
-			title = unicodedata.normalize('NFKD', info['title']).encode('ascii', 'ignore')
-		else:
-			title = str(info['title'])
+		#if(info['title'] is not None):
+		#	title = unicodedata.normalize('NFKD', info['title']).encode('ascii', 'ignore')
+		#else:
+		#	title = str(info['title'])
+		#title = str(info['title'])
+		title = safe_str(info['title'])
 		artist = str(info['artist'])
 		album = str(info['album'])
 		trackType = str(info['trackType'])
